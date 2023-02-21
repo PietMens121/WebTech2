@@ -18,7 +18,7 @@ use App\Routing\Router;
 use App\Container\DependencyContainer;
 
 
-$router = new Router();
+$router = new Router;
 $router->setContainer(new DependencyContainer([]));
 
 require_once "src/routes/web.php";

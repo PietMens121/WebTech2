@@ -2,13 +2,16 @@
 
 namespace App\Routing;
 
-use Psr\Http\Message\ResponseInterface;
+use App\Factories\HttpFactory;
+use App\Routing\RouteArray;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Container\ContainerInterface;
+use App\Http\Auth\AuthUser;
 
-
-class Router implements MiddlewareInterface, RequestHandlerInterface
+class Router
 {
     private $methods = ['GET'];
 
@@ -35,13 +38,40 @@ class Router implements MiddlewareInterface, RequestHandlerInterface
         return $route;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $controller): ResponseInterface
     {
-        // TODO: Implement process() method.
+        $route = self::$routeArray->getURI(parse_url($request->getUri(), PHP_URL_PATH));
+        if($route !== null) {
+            if($route->getMethod() === $request->getMethod()) {
+
+                if(!empty($route->getPermissions())) {
+                    if( empty($_SESSION['user_permissions']) or
+                        !AuthUser::hasPermissions($_SESSION['user_permissions'], $route->getPermissions()) )
+                    {
+                        return HttpFactory::createResponse(401)->withAddedHeader('Location', '/');
+                    }
+                }
+
+                $routeHandler = $route->getHandler();
+                return $routeHandler->handle($request);
+
+            } else {
+                // wrong method.
+                return HttpFactory::createResponse(405);
+            }
+        } else {
+            return $controller->handle($request);
+        }
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO: Implement handle() method.
+        $notFound = new RouteNotFoundHandler();
+        return $notFound->handle($request);
+    }
+
+    public function setContainer(ContainerInterface $container)
+    {
+        self::$container = $container;
     }
 }
