@@ -1,6 +1,6 @@
 <?php
 
-// Autoload all classes
+// Autoload classes
 define('BASE_PATH', realpath(dirname(__FILE__)));
 
 spl_autoload_register(function ($class) {
@@ -9,16 +9,18 @@ spl_autoload_register(function ($class) {
 });
 
 //Autoload the psr classes
-require "vendor/autoload.php";
+require BASE_PATH."/vendor/autoload.php";
 
 session_start();
 
 use App\Routing\Router;
+use App\Templating\Render;
 
 
-require "App/config.php";
+//
+//$router = new Router;
+//$router->setContainer($DIcontainer);
 
-$router = new Router;
-$router->setContainer($DIcontainer);
+Render::view('home.html');
 
 require_once "src/routes/web.php";
