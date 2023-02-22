@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use App\Http\Auth\AuthUser;
 
-class Router
+class Router implements MiddlewareInterface, RequestHandlerInterface
 {
     private $methods = ['GET'];
 

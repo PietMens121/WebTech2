@@ -15,12 +15,14 @@ session_start();
 
 use App\Routing\Router;
 use App\Templating\Render;
+use App\Http\Kernel;
 
+require_once 'App/config.php';
 
-//
-//$router = new Router;
-//$router->setContainer($DIcontainer);
+$router = new Router();
+$router->setContainer($DIcontainer);
+$kernel = new Kernel($router);
 
-Render::view('home.html');
+//Render::view('/layouts/layout.html');
 
-require_once "src/routes/web.php";
+require_once "routes/web.php";

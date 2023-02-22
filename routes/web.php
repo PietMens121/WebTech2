@@ -7,4 +7,4 @@ use App\Routing\Router;
 //Example route
 // Router::newRoute('/', 'Home', 'HomePageController', 'get');
 
-//Router::newRoute('/', 'Home', 'HomePageController', 'get', 'showView');
+Router::newRoute('/', 'Home', 'HomePageController', 'get', 'showView');
