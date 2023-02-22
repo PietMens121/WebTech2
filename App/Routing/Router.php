@@ -23,16 +23,21 @@ class Router
         self::$routerArray = new RouteArray();
     }
 
+    /**
+     * @param string $name
+     * @param Route $route
+     * @return void
+     */
     public static function add(string $name, Route $route): void
     {
         self::$routeArray->add($name, $route);
     }
 
-    public static function newRoute(string $uri, string $name, string $controller, string $method): Route
+    public static function newRoute(string $uri, string $name, string $controller, string $method, string $function): Route
     {
         if (in_array($method, self::$methods)) {
             $controller = self::$container->get($controller);
-            $route = new Route($method, $uri, $controller);
+            $route = new Route($method, $uri, $controller, $function);
             self::add($name, $route);
         }
         return $route;
