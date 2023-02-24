@@ -2,7 +2,8 @@
 
 namespace src\controllers;
 
-class HomePageController
+
+class HomePageController extends Controller
 {
 
 }

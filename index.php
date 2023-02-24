@@ -13,6 +13,8 @@ require BASE_PATH."/vendor/autoload.php";
 
 session_start();
 
+use App\Factories\ServerRequestFactory;
+use App\Http\sendResponse;
 use App\Routing\Router;
 use App\Templating\Render;
 use App\Http\Kernel;
@@ -26,3 +28,9 @@ $kernel = new Kernel($router);
 //Render::view('/layouts/layout.html');
 
 require_once "routes/web.php";
+
+$serverRequest = ServerRequestFactory::createServerRequest();
+
+$response = $kernel->handle($serverRequest);
+
+sendResponse::execute($response);

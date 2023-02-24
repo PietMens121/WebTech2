@@ -24,10 +24,10 @@ class DependencyContainer implements ContainerInterface
      */
     public function get(string $id)
     {
-        if ($this->has($id)) {
+        if ($this->dependencies[$id]) {
             return $this->dependencies[$id];
         } else {
-            throw new NotFoundException("this dependency does not exist");
+            throw new NotFoundException();
         }
     }
 
@@ -37,9 +37,10 @@ class DependencyContainer implements ContainerInterface
      */
     public function has(string $id): bool
     {
-        if (in_array($id, $this->dependencies)){
+        if (in_array($id, $this->dependencies)) {
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 }

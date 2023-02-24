@@ -18,6 +18,6 @@ class Kernel implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->requestHandler->process($request);
+        return $this->requestHandler->process($request, );
     }
 }

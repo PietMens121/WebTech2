@@ -2,25 +2,28 @@
 
 namespace App\Routing;
 
-use App\Factories\HttpFactory;
-use App\Routing\RouteArray;
+use App\Http\Response;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
-use App\Http\Auth\AuthUser;
+use src\controllers\Controller;
 
 class Router implements MiddlewareInterface, RequestHandlerInterface
 {
-    private $methods = ['GET'];
+    /**
+     * @var string[]
+     */
+    private static array $methods = ['GET', 'POST'];
 
-    private static $routerArray;
+
     private static $container;
+    private static $routeArray;
 
     public function __construct()
     {
-        self::$routerArray = new RouteArray();
+        self::$routeArray = new RouteArray();
     }
 
     /**
@@ -33,40 +36,58 @@ class Router implements MiddlewareInterface, RequestHandlerInterface
         self::$routeArray->add($name, $route);
     }
 
-    public static function newRoute(string $uri, string $name, string $controller, string $method, string $function): Route
-    {
-        if (in_array($method, self::$methods)) {
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param string $name
+     * @param Controller $controller
+     * @param string $function
+     * @return Route
+     */
+
+    public static function newRoute(
+        string $method,
+        string $uri,
+        string $name,
+        string $controller,
+        string $function
+    ): Route {
+//        Check if the method is available
+        if (in_array(strtoupper($method), self::$methods)) {
+//            Get the controller that is in the container
             $controller = self::$container->get($controller);
-            $route = new Route($method, $uri, $controller, $function);
+
+//            Set the new Route
+            $route = new Route($uri, $name, $controller, $method, $function);
             self::add($name, $route);
         }
         return $route;
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $controller): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $route = self::$routeArray->getURI(parse_url($request->getUri(), PHP_URL_PATH));
-        if($route !== null) {
-            if($route->getMethod() === $request->getMethod()) {
+//        Get the route from RouteArray
+        $route = self::$routeArray->getUri(parse_url($request->getUri(), PHP_URL_PATH));
 
-                if(!empty($route->getPermissions())) {
-                    if( empty($_SESSION['user_permissions']) or
-                        !AuthUser::hasPermissions($_SESSION['user_permissions'], $route->getPermissions()) )
-                    {
-                        return HttpFactory::createResponse(401)->withAddedHeader('Location', '/');
-                    }
-                }
-
-                $routeHandler = $route->getHandler();
-                return $routeHandler->handle($request);
-
-            } else {
-                // wrong method.
-                return HttpFactory::createResponse(405);
-            }
-        } else {
-            return $controller->handle($request);
+//        Check if the route exists
+        if ($route == null) {
+            return new Response('404');
         }
+
+//        Check if the method in $methods exists
+        if (!in_array($route->getMethod(), $this::$methods)) {
+            return new Response('405');
+        }
+
+        if (!class_exists($route->getController())) {
+            return new Response('404');
+        }
+
+        if (!method_exists($route->getContorller(), $route->getFunction())) {
+            return new Response('404');
+        }
+
+        return new Response('200');
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
