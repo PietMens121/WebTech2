@@ -68,9 +68,9 @@ class Router implements MiddlewareInterface, RequestHandlerInterface
     {
 //        Get the route from RouteArray
         $route = self::$routeArray->getUri(parse_url($request->getUri(), PHP_URL_PATH));
-
+        var_dump($request->getUri());
 //        Check if the route exists
-        if ($route == null) {
+        if ($route === null) {
             return new Response('404');
         }
 
