@@ -13,24 +13,31 @@ require BASE_PATH."/vendor/autoload.php";
 
 session_start();
 
-use App\Factories\ServerRequestFactory;
-use App\Http\sendResponse;
-use App\Routing\Router;
-use App\Templating\Render;
-use App\Http\Kernel;
+use App\Service\DotEnv;
 
-require_once 'App/config.php';
+(new DotEnv(__DIR__ . '/.env'))->load();
 
-$router = new Router();
-$router->setContainer($DIcontainer);
-$kernel = new Kernel($router);
+(new src\controllers\HomePageController())->index();
 
-//Render::view('/layouts/layout.html');
-
-require_once "routes/web.php";
-
-$serverRequest = ServerRequestFactory::createServerRequest();
-
-$response = $kernel->handle($serverRequest);
-
-sendResponse::execute($response);
+//For Routes
+//use App\Factories\ServerRequestFactory;
+//use App\Http\sendResponse;
+//use App\Routing\Router;
+//use App\Templating\Render;
+//use App\Http\Kernel;
+//
+//require_once 'App/config.php';
+//
+//$router = new Router();
+//$router->setContainer($DIcontainer);
+//$kernel = new Kernel($router);
+//
+////Render::view('/layouts/layout.html');
+//
+//require_once "routes/web.php";
+//
+//$serverRequest = ServerRequestFactory::createServerRequest();
+//
+//$response = $kernel->handle($serverRequest);
+//
+//sendResponse::execute($response);

@@ -6,7 +6,12 @@ class Render
 {
     private const VIEW_FOLDER_PATH = 'resources/views';
 
-    static function view($filename, $data = array())
+    /**
+     * @param $filename
+     * @param $data
+     * @return void
+     */
+    public static function view($filename, $data = array()): void
     {
         $file = self::prepare($filename);
         require $file;
@@ -16,7 +21,7 @@ class Render
      * @param $filename
      * @return false|string
      */
-    static function prepare($filename)
+    private static function prepare($filename): bool|string
     {
 //        creating temp file so the original doesnt change
         $tempDir = $_SERVER['DOCUMENT_ROOT'] . '/temp';
@@ -28,15 +33,14 @@ class Render
     }
 
     /**
-     * included files are propperly included here
+     * included files are properly included here
      *
-     * @return mixed
+     * @return string|bool
      */
 
-    static function includeFile($filename)
+    private static function includeFile($filename): string|bool
     {
-        $contents = file_get_contents(dirname(__DIR__,2 ) . '/' . self::VIEW_FOLDER_PATH . '/' . $filename);
-        return $contents;
+        return file_get_contents(dirname(__DIR__, 2) . '/' . self::VIEW_FOLDER_PATH . '/' . $filename);
     }
 
     /**
@@ -45,7 +49,7 @@ class Render
      * @param $code
      * @return mixed
      */
-    static function compileView($code)
+    private static function compileView($code): mixed
     {
         // TODO change templateing to correct code
 
