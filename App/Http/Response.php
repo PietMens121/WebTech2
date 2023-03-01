@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Templating\Render;
+use Couchbase\View;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -75,13 +77,16 @@ class Response implements ResponseInterface
 
     public function __construct(
         int $status = 200,
-        array $headers = [],
-        $body = null,
-        string $version = '1.1',
-        string $reason = null
+        string $reason = null,
     ) {
         $this->checkStatusCodeRange($status);
         $this->statusCode = $status;
+        $this->showErrorPage();
+    }
+
+    public function showErrorPage()
+    {
+        Render::view('errors/error.html');
     }
 
     public function createResponse()
@@ -90,7 +95,7 @@ class Response implements ResponseInterface
 
     private function checkStatusCodeRange(int $statusCode): void
     {
-        if($statusCode < 100 || $statusCode >= 600){
+        if ($statusCode < 100 || $statusCode >= 600) {
             throw new \InvalidArgumentException("Status code needs to be between 100 and 600");
         }
     }
