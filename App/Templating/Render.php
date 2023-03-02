@@ -7,6 +7,8 @@ class Render
     private const VIEW_FOLDER_PATH = 'resources/views';
 
     /**
+     * The function to initialize the view
+     *
      * @param $filename
      * @param $data
      * @return void
@@ -14,6 +16,7 @@ class Render
     public static function view($filename, $data = array()): void
     {
         $file = self::prepare($filename);
+        extract($data, EXTR_SKIP);
         require $file;
     }
 

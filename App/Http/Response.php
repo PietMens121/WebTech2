@@ -89,10 +89,6 @@ class Response implements ResponseInterface
         Render::view('errors/error.html');
     }
 
-    public function createResponse()
-    {
-    }
-
     private function checkStatusCodeRange(int $statusCode): void
     {
         if ($statusCode < 100 || $statusCode >= 600) {
