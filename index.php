@@ -18,26 +18,3 @@ use App\Service\DotEnv;
 (new DotEnv(__DIR__ . '/.env'))->load();
 
 (new src\controllers\HomePageController())->index();
-
-//For Routes
-//use App\Factories\ServerRequestFactory;
-//use App\Http\sendResponse;
-//use App\Routing\Router;
-//use App\Templating\Render;
-//use App\Http\Kernel;
-//
-//require_once 'App/config.php';
-//
-//$router = new Router();
-//$router->setContainer($DIcontainer);
-//$kernel = new Kernel($router);
-//
-////Render::view('/layouts/layout.html');
-//
-//require_once "routes/web.php";
-//
-//$serverRequest = ServerRequestFactory::createServerRequest();
-//
-//$response = $kernel->handle($serverRequest);
-//
-//sendResponse::execute($response);
