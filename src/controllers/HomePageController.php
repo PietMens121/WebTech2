@@ -14,7 +14,9 @@ class HomePageController extends Controller
     public function index()
     {
         $user = new User();
-        $user = $user->find(1000);
+        $user = $user->find(1);
+
+        var_dump($user->username);
 
 
 
