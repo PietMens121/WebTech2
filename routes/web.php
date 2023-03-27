@@ -2,6 +2,8 @@
 
 use App\Routing\Router;
 
-Router::get('/', function () {
+$router = new Router();
+
+$router->get('/', function () {
     var_dump("Hallo!");
 });
