@@ -14,7 +14,14 @@ class HomePageController extends Controller
     public function index()
     {
         $user = new User();
-        $user = $user->find(6);
-        new Response(404, );
+        $user = $user->find(1);
+
+        var_dump($user->username);
+
+
+
+        Render::view('home.html', [
+            'user' => $user
+        ]);
     }
 }
