@@ -1,9 +1,12 @@
 <?php
 
 use App\Routing\Router;
-
-$router = new Router();
+use App\Templating\Render;
 
 $router->get('/', function () {
-    var_dump("Hallo!");
+    Render::view('home.html');
+});
+
+$router->get('/test', function () {
+    Render::view('test.html');
 });

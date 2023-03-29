@@ -13,8 +13,12 @@ require BASE_PATH."/vendor/autoload.php";
 
 session_start();
 
+use App\Routing\Router;
 use App\Service\DotEnv;
 
 (new DotEnv(__DIR__ . '/.env'))->load();
 
-(new src\controllers\HomePageController())->index();
+//Router
+$router = new Router();
+require_once BASE_PATH . '/routes/web.php';
+$router->handleRequest();
