@@ -19,6 +19,5 @@ use App\Service\DotEnv;
 (new DotEnv(__DIR__ . '/.env'))->load();
 
 //Router
-$router = new Router();
 require_once BASE_PATH . '/routes/web.php';
-$router->handleRequest();
+Router::getInstance()->handleRequest();

@@ -4,6 +4,18 @@ namespace App\Routing;
 
 class Router
 {
+    private static Router $instance;
+
+    /**
+     * @return Router
+     */
+    public static function getInstance(): Router
+    {
+        if (!isset(self::$instance))
+            self::$instance = new Router();
+        return self::$instance;
+    }
+
     private RouteArray $routeArray;
 
     public function __construct()
