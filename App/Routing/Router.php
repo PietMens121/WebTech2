@@ -4,6 +4,7 @@ namespace App\Routing;
 
 class Router
 {
+    // Singleton
     private static Router $instance;
 
     /**
@@ -16,13 +17,16 @@ class Router
         return self::$instance;
     }
 
+    // Fields
     private RouteArray $routeArray;
 
+    // Constructor
     public function __construct()
     {
         $this->routeArray = new RouteArray();
     }
 
+    // Functions
     public function handleRequest() : void {
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];

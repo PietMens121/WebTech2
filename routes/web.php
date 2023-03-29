@@ -1,17 +1,15 @@
 <?php
 
-use App\Routing\Router;
+use App\Routing\Route;
 use App\Templating\Render;
-$router = Router::getInstance();
-
 
 
 // Setup routes here
 
-$router->get('/', function () {
+Route::get('/', function () {
     Render::view('home.html');
 });
 
-$router->get('/test', function () {
+Route::get('/test', function () {
     Render::view('test.html');
 });
