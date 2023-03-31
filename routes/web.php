@@ -2,13 +2,11 @@
 
 use App\Routing\Route;
 use App\Templating\Render;
-
+use src\controllers\HomePageController;
 
 // Setup routes here
 
-Route::get('/', function () {
-    Render::view('home.html');
-});
+Route::get('/', [new HomePageController, 'index']);
 
 Route::get('/test', function () {
     Render::view('test.html');

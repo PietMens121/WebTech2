@@ -2,6 +2,8 @@
 
 namespace App\Routing;
 
+use App\Http\Response;
+
 class Router
 {
     // Singleton
@@ -32,6 +34,7 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
 
         $route = $this->routeArray->find($method, $uri);
+        if (!isset($route)) new Response(404);
         $route->getHandler()();
     }
 

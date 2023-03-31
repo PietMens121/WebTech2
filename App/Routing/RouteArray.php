@@ -10,7 +10,7 @@ class RouteArray
         $this->routes[$route->getMethod()][$route->getUri()] = $route;
     }
 
-    function find(string $method, string $uri) : Route {
+    function find(string $method, string $uri) {
         return $this->routes[$method][$uri];
     }
 }
