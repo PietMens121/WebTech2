@@ -20,12 +20,12 @@ class Router
     }
 
     // Fields
-    private RouteArray $routeArray;
+    private RouteContainer $routeContainer;
 
     // Constructor
     public function __construct()
     {
-        $this->routeArray = new RouteArray();
+        $this->routeContainer = new RouteContainer();
     }
 
     // Functions
@@ -33,7 +33,7 @@ class Router
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
 
-        $route = $this->routeArray->find($method, $uri);
+        $route = $this->routeContainer->find($method, $uri);
         if (!isset($route)) new Response(404);
         $route->getHandler()();
     }
@@ -47,6 +47,6 @@ class Router
     }
 
     private function addRoute(string $method, string $uri, callable $callback) : void {
-        $this->routeArray->add(new Route($method, $uri, $callback));
+        $this->routeContainer->add(new Route($method, $uri, $callback));
     }
 }

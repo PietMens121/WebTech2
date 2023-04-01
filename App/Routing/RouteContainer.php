@@ -2,7 +2,7 @@
 
 namespace App\Routing;
 
-class RouteArray
+class RouteContainer
 {
     private array $routes = [];
 
