@@ -16,8 +16,9 @@ class Route
     // Fields
     private string $name;
     private string $method;
-    private string $uri;
+    private Uri $uri;
     private $handler;
+    private array $uriSegments;
 
     // Constructor
     public function __construct($method, $uri, $handler, $name = "")
@@ -48,7 +49,7 @@ class Route
     /**
      * @return string
      */
-    public function getUri(): string
+    public function getUri(): Uri
     {
         return $this->uri;
     }

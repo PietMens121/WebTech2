@@ -30,12 +30,14 @@ class Router
 
     // Functions
     public function handleRequest() : void {
-        $uri = $_SERVER['REQUEST_URI'];
+        $uri = new Uri($_SERVER['REQUEST_URI']);
         $method = $_SERVER['REQUEST_METHOD'];
 
         $route = $this->routeContainer->find($method, $uri);
-        if (!isset($route)) new Response(404);
-        $route->getHandler()();
+        if (is_null($route)) new Response(404);
+
+        $callback = $route->getHandler();
+        call_user_func_array($callback, $uri->extractParameters($route->getUri()));
     }
 
     public function get(string $uri, callable $callback) : void {
@@ -47,6 +49,6 @@ class Router
     }
 
     private function addRoute(string $method, string $uri, callable $callback) : void {
-        $this->routeContainer->add(new Route($method, $uri, $callback));
+        $this->routeContainer->add(new Route($method, new Uri($uri), $callback));
     }
 }
