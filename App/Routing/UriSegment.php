@@ -7,10 +7,16 @@ class UriSegment
     private string $name;
     private bool $parameter;
 
+    /**
+     * Constructor
+     * @param string $segment
+     */
     public function __construct(string $segment)
     {
-        $this->parameter = preg_match('/^{.*}$/', $segment);  // Checks if segment starts with '{' and ends with '}'.
+        // Check if segment starts with '{' and ends with '}'.
+        $this->parameter = preg_match('/^{.*}$/', $segment);
 
+        //
         if ($this->parameter) $this->name = substr($segment, 1, -1);
         else $this->name = $segment;
     }

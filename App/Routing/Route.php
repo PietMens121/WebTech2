@@ -4,23 +4,40 @@ namespace App\Routing;
 
 class Route
 {
-    // Static functions
+    /**
+     * Creates route with GET method.
+     * @param string $uri
+     * @param callable $callback
+     * @return void
+     */
     public static function get(string $uri, callable $callback) : void {
         Router::getInstance()->get($uri, $callback);
     }
 
+    /**
+     * Creates route with POST method.
+     * @param string $uri
+     * @param callable $callback
+     * @return void
+     */
     public static function post(string $uri, callable $callback) : void {
         Router::getInstance()->post($uri, $callback);
     }
 
-    // Fields
+
     private string $name;
     private string $method;
     private Uri $uri;
     private $handler;
     private array $uriSegments;
 
-    // Constructor
+    /**
+     * Constructor
+     * @param $method
+     * @param $uri
+     * @param $handler
+     * @param $name
+     */
     public function __construct($method, $uri, $handler, $name = "")
     {
         $this->method = $method;
@@ -31,6 +48,7 @@ class Route
 
     // Functions
     /**
+     * Getter for name of the route.
      * @return string
      */
     public function getName(): string
@@ -39,6 +57,7 @@ class Route
     }
 
     /**
+     * Getter for method of the route.
      * @return string
      */
     public function getMethod(): string
@@ -47,6 +66,7 @@ class Route
     }
 
     /**
+     * Getter for {@link Uri} of the route.
      * @return string
      */
     public function getUri(): Uri
@@ -55,9 +75,10 @@ class Route
     }
 
     /**
-     * @return mixed
+     * Getter for handler of the route.
+     * @return callable
      */
-    public function getHandler()
+    public function getHandler() : callable
     {
         return $this->handler;
     }
