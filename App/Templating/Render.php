@@ -55,7 +55,33 @@ class Render
     private static function compileView($code): mixed
     {
         // TODO change templateing to correct code
-
+        $code = self::compileEcho($code);
+        $code = self::compileIf($code);
+        $code = self::compileEndIf($code);
+        $code = self::compileElseIf($code);
+        $code = self::compileElse($code);
         return $code;
     }
+
+    private static function compileEcho($code){
+        return preg_replace('~{{\s*(.+?)\s*}}~is', '<?php echo $1 ?>', $code);
+    }
+
+    private static function compileIf($code){
+        return preg_replace('~@if([^;]*).~is', '<?php if$1: ?>', $code);
+    }
+
+    private static function compileElseIf($code){
+        return preg_replace('~@elseif([^;]*).~is', '<?php elseif$1: ?>', $code);
+    }
+
+    private static function compileElse($code){
+        return preg_replace('~@else;~is', '<?php else: ?>', $code);
+    }
+
+    private static function compileEndIf($code){
+        return preg_replace('~@endif[^;]*.~is', '<?php endif; ?>', $code);
+    }
+
+
 }
