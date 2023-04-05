@@ -3,9 +3,12 @@
 namespace App\Routing;
 
 use App\Http\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
+    //TODO: dependency injection
     private static Router $instance;
 
     /**
@@ -35,48 +38,49 @@ class Router
      * Handles incoming request.
      * @return void
      */
-    public function handleRequest(): void
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        // Get URI and method from request
-        $uri = new Uri($_SERVER['REQUEST_URI']);
-        $method = $_SERVER['REQUEST_METHOD'];
+        // Get Path and method from request
+        $path = new Path($request->getUri()->getPath());
+        $method = $request->getMethod();
 
         // Check if route exists, if not send 404
-        $route = $this->routeContainer->find($method, $uri);
+        $route = $this->routeContainer->find($method, $path);
         if (is_null($route)) {
-            new Response(404);
+            return new Response(404);
         }
 
         // Call handler from the route and parse right parameters
         $callback = $route->getHandler();
-        call_user_func_array($callback, $uri->extractParameters($route->getUri()));
+        $params = $path->extractParameters($route->getPath());
+        return call_user_func_array($callback, $params);
     }
 
     /**
      * Creates route with GET method.
-     * @param string $uri
+     * @param string $path
      * @param callable $callback
      * @return void
      */
-    public function get(string $uri, callable $callback): void
+    public function get(string $path, callable $callback): void
     {
-        $this->addRoute("GET", $uri, $callback);
+        $this->addRoute("GET", $path, $callback);
     }
 
     /**
      * Creates route with POST method.
-     * @param string $uri
+     * @param string $path
      * @param callable $callback
      * @return void
      */
-    public function post(string $uri, callable $callback): void
+    public function post(string $path, callable $callback): void
     {
-        $this->addRoute("POST", $uri, $callback);
+        $this->addRoute("POST", $path, $callback);
     }
 
 
-    private function addRoute(string $method, string $uri, callable $callback): void
+    private function addRoute(string $method, string $path, callable $callback): void
     {
-        $this->routeContainer->add(new Route($method, new Uri($uri), $callback));
+        $this->routeContainer->add(new Route($method, new Path($path), $callback));
     }
 }

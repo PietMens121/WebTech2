@@ -2,7 +2,7 @@
 
 namespace App\Routing;
 
-class UriSegment
+class PathSegment
 {
     private string $name;
     private bool $parameter;
