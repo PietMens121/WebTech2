@@ -1,24 +1,23 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Testpagina</title>
-</head>
-<body>
-    <h1>Test</h1>
-    <p>Dit is een testpagina</p>
-    <a href="/">Terug naar homepagina</a>
-    <p>{{ $user }}</p>
-    @if($user === 'sPiet');
-        <p>Hallo</p>
-    @elseif($user === 'PSiet');
-        <p>Doei</p>
-    @else;
-        <p>Hidjfi</p>
-    @endif;
+@extends(layouts/layout.html)
 
-</body>
-</html>
+@section(body)
+<form action="/action_page.php">
+    <label for="fname">First name:</label><br>
+    <input type="text" id="fname" name="fname" value="John"><br>
+    <label for="lname">Last name:</label><br>
+    <input type="text" id="lname" name="lname" value="Doe"><br><br>
+    <input type="submit" value="Submit">
+</form>
+@endsection()
+
+<!--    <h1>Test</h1>-->
+<!--    <p>Dit is een testpagina</p>-->
+<!--    <a href="/">Terug naar homepagina</a>-->
+<!--    <p>{{ $user }}</p>-->
+<!--    @if($user === 'sPiet');-->
+<!--        <p>Hallo</p>-->
+<!--    @elseif($user === 'PSiet');-->
+<!--        <p>Doei</p>-->
+<!--    @else;-->
+<!--        <p>Hidjfi</p>-->
+<!--    @endif;-->
