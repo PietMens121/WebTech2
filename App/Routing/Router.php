@@ -14,8 +14,9 @@ class Router
      */
     public static function getInstance(): Router
     {
-        if (!isset(self::$instance))
+        if (!isset(self::$instance)) {
             self::$instance = new Router();
+        }
         return self::$instance;
     }
 
@@ -34,14 +35,17 @@ class Router
      * Handles incoming request.
      * @return void
      */
-    public function handleRequest() : void {
+    public function handleRequest(): void
+    {
         // Get URI and method from request
         $uri = new Uri($_SERVER['REQUEST_URI']);
         $method = $_SERVER['REQUEST_METHOD'];
 
         // Check if route exists, if not send 404
         $route = $this->routeContainer->find($method, $uri);
-        if (is_null($route)) new Response(404);
+        if (is_null($route)) {
+            new Response(404);
+        }
 
         // Call handler from the route and parse right parameters
         $callback = $route->getHandler();
@@ -54,7 +58,8 @@ class Router
      * @param callable $callback
      * @return void
      */
-    public function get(string $uri, callable $callback) : void {
+    public function get(string $uri, callable $callback): void
+    {
         $this->addRoute("GET", $uri, $callback);
     }
 
@@ -64,12 +69,14 @@ class Router
      * @param callable $callback
      * @return void
      */
-    public function post(string $uri, callable $callback) : void {
+    public function post(string $uri, callable $callback): void
+    {
         $this->addRoute("POST", $uri, $callback);
     }
 
 
-    private function addRoute(string $method, string $uri, callable $callback) : void {
+    private function addRoute(string $method, string $uri, callable $callback): void
+    {
         $this->routeContainer->add(new Route($method, new Uri($uri), $callback));
     }
 }
