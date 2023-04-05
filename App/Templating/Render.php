@@ -86,6 +86,9 @@ class Render
         $code = self::compileEndIf($code);
         $code = self::compileElseIf($code);
         $code = self::compileElse($code);
+        $code = self::compileForEach($code);
+        $code = self::compileEndForEach($code);
+        $code = self::compilePHP($code);
         return $code;
     }
 
@@ -113,6 +116,22 @@ class Render
     {
         return preg_replace('~@endif[^;]*.~is', '<?php endif; ?>', $code);
     }
+
+    private static function compileForEach($code)
+    {
+        return preg_replace('~@foreach\(([^)]*)\)~', '<?php foreach($1): ?>', $code);
+    }
+
+    private static function compileEndForEach($code)
+    {
+        return preg_replace('~@endforeach~', '<?php endforeach ?>', $code);
+    }
+
+    private static function compilePHP($code)
+    {
+        return preg_replace('~\@php\((.*)(?=\)\;)..~ism', '<?php $1 ?>', $code);
+    }
+
 
     private static function compileSection($code)
     {

@@ -13,11 +13,11 @@ class HomePageController extends Controller
 {
     public function index()
     {
-        $user = new User();
-        $user = $user->find(2);
+        $users = new User();
+        $users = $users->all();
 
-        Render::view('home.html', [
-            'user' => $user
+        Render::view('test.html', [
+            'users' => $users
         ]);
     }
 }
