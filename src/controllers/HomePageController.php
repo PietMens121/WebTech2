@@ -14,7 +14,7 @@ class HomePageController extends Controller
     public function index()
     {
         $users = new User();
-        $users = $users->all();
+        $users = $users->role();
 
         Render::view('test.html', [
             'users' => $users

@@ -3,6 +3,8 @@
 namespace src\models;
 
 use App\Database\Model;
+use App\Database\Relations\HasOne;
+use ;
 
 /**
  * @property string $username
@@ -17,4 +19,8 @@ class User extends Model
         'username',
         'password'
     ];
+    public function role(): false|array
+    {
+        return $this->hasOne(Role::class);
+    }
 }

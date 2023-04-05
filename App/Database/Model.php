@@ -97,11 +97,15 @@ abstract class Model
     /**
      * find model based on id returns ModelNotFound exception if no model is found
      *
-     * @param $id
-     * @return void
+     * @param Model $model
+     * @return array|false
      */
-    public function findOrFail($id)
+    public function hasOne(Model $model)
     {
-//        TODO: create function
+        $reflection = new \ReflectionObject($this);
+        $query = sprintf('SELECT * FROM %s WHERE %s "%s"', $model->table, $reflection->getName() . '.id', $reflection->getProperty('primaryKey'));
+        $pdo = $this->conn->prepare($query);
+        $pdo->execute();
+        return $pdo->fetchAll(PDO::FETCH_ASSOC);
     }
 }
