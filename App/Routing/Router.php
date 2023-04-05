@@ -3,101 +3,73 @@
 namespace App\Routing;
 
 use App\Http\Response;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Container\ContainerInterface;
-use src\controllers\Controller;
 
-class Router implements MiddlewareInterface, RequestHandlerInterface
+class Router
 {
+    private static Router $instance;
+
     /**
-     * @var string[]
+     * Singleton method
+     * @return Router
      */
-    private static array $methods = ['GET', 'POST'];
+    public static function getInstance(): Router
+    {
+        if (!isset(self::$instance))
+            self::$instance = new Router();
+        return self::$instance;
+    }
 
 
-    private static $container;
-    private static $routeArray;
+    private RouteContainer $routeContainer;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        self::$routeArray = new RouteArray();
+        $this->routeContainer = new RouteContainer();
     }
 
     /**
-     * @param string $name
-     * @param Route $route
+     * Handles incoming request.
      * @return void
      */
-    public static function add(string $name, Route $route): void
-    {
-        self::$routeArray->add($name, $route);
+    public function handleRequest() : void {
+        // Get URI and method from request
+        $uri = new Uri($_SERVER['REQUEST_URI']);
+        $method = $_SERVER['REQUEST_METHOD'];
+
+        // Check if route exists, if not send 404
+        $route = $this->routeContainer->find($method, $uri);
+        if (is_null($route)) new Response(404);
+
+        // Call handler from the route and parse right parameters
+        $callback = $route->getHandler();
+        call_user_func_array($callback, $uri->extractParameters($route->getUri()));
     }
 
     /**
-     * @param string $method
+     * Creates route with GET method.
      * @param string $uri
-     * @param string $name
-     * @param Controller $controller
-     * @param string $function
-     * @return Route
+     * @param callable $callback
+     * @return void
      */
-
-    public static function newRoute(
-        string $method,
-        string $uri,
-        string $name,
-        string $controller,
-        string $function
-    ): Route {
-//        Check if the method is available
-        if (in_array(strtoupper($method), self::$methods)) {
-//            Get the controller that is in the container
-            $controller = self::$container->get($controller);
-
-//            Set the new Route
-            $route = new Route($uri, $name, $controller, $method, $function);
-            self::add($name, $route);
-        }
-        return $route;
+    public function get(string $uri, callable $callback) : void {
+        $this->addRoute("GET", $uri, $callback);
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-//        Get the route from RouteArray
-        $route = self::$routeArray->getUri(parse_url($request->getUri(), PHP_URL_PATH));
-        var_dump($request->getUri());
-//        Check if the route exists
-        if ($route === null) {
-            return new Response('404');
-        }
-
-//        Check if the method in $methods exists
-        if (!in_array($route->getMethod(), $this::$methods)) {
-            return new Response('405');
-        }
-
-        if (!class_exists($route->getController())) {
-            return new Response('404');
-        }
-
-        if (!method_exists($route->getContorller(), $route->getFunction())) {
-            return new Response('404');
-        }
-
-        return new Response('200');
+    /**
+     * Creates route with POST method.
+     * @param string $uri
+     * @param callable $callback
+     * @return void
+     */
+    public function post(string $uri, callable $callback) : void {
+        $this->addRoute("POST", $uri, $callback);
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface
-    {
-        $notFound = new RouteNotFoundHandler();
-        return $notFound->handle($request);
-    }
 
-    public function setContainer(ContainerInterface $container)
-    {
-        self::$container = $container;
+    private function addRoute(string $method, string $uri, callable $callback) : void {
+        $this->routeContainer->add(new Route($method, new Uri($uri), $callback));
     }
 }

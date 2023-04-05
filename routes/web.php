@@ -1,10 +1,17 @@
 <?php
 
-namespace src\routes;
+use App\Routing\Route;
+use App\Templating\Render;
+use src\controllers\HomePageController;
 
-use App\Routing\Router;
+// Setup routes here
 
-//Example route
-// Router::newRoute('/', 'Home', 'HomePageController', 'get');
+Route::get('/', [new HomePageController, 'index']);
 
-Router::newRoute('get', '/', 'Home', 'HomePageController', 'showView');
+Route::get('/test', function () {
+    Render::view('test.html');
+});
+
+Route::get('/kaas/{parameter}', function ($parameter) {
+   var_dump($parameter);
+});

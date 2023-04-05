@@ -19,7 +19,7 @@ abstract class Model
     }
 
     /**
-     * find record on id
+     * find record based on id
      *
      * @param $id
      * @return array|false
@@ -45,6 +45,14 @@ abstract class Model
         return $pdo->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * finds records based on the searched columns and values
+     *
+     * @param $column
+     * @param $value
+     * @param $operator
+     * @return array|false
+     */
     public function where($column, $value, $operator = '=')
     {
         $query = sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
@@ -65,23 +73,35 @@ abstract class Model
         $columns = [];
         $values = [];
 
-        foreach($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property){
+        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $columns[] = '`' . $property->getName() . '` = ?';
             $values[] = $this->{$property->getName()};
         }
 
         $columns = implode(',', $columns);
 
-        $query = sprintf('INSERT INTO %s SET %s ',$this->table, $columns);
+        $query = sprintf('INSERT INTO %s SET %s ', $this->table, $columns);
 
         var_dump($query);
 
         try {
             $pdo = $this->conn->prepare($query)->execute($values);
-        } catch (\PDOException $e){
+        } catch (\PDOException $e) {
             print('something went wrong inserting/updating the user ' . $e);
+            $pdo = false;
         }
 
         return $pdo;
+    }
+
+    /**
+     * find model based on id returns ModelNotFound exception if no model is found
+     *
+     * @param $id
+     * @return void
+     */
+    public function findOrFail($id)
+    {
+//        TODO: create function
     }
 }
