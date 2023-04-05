@@ -18,7 +18,6 @@ session_start();
 
 (new DotEnv(BASE_PATH . '/.env'))->load();
 
-
 //Router
 require_once BASE_PATH . '/routes/web.php';
 Router::getInstance()->handleRequest();
