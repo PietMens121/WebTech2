@@ -10,7 +10,8 @@ class Route
      * @param callable $callback
      * @return void
      */
-    public static function get(string $uri, callable $callback) : void {
+    public static function get(string $uri, callable $callback): void
+    {
         Router::getInstance()->get($uri, $callback);
     }
 
@@ -20,7 +21,8 @@ class Route
      * @param callable $callback
      * @return void
      */
-    public static function post(string $uri, callable $callback) : void {
+    public static function post(string $uri, callable $callback): void
+    {
         Router::getInstance()->post($uri, $callback);
     }
 
@@ -47,6 +49,7 @@ class Route
     }
 
     // Functions
+
     /**
      * Getter for name of the route.
      * @return string
@@ -78,7 +81,7 @@ class Route
      * Getter for handler of the route.
      * @return callable
      */
-    public function getHandler() : callable
+    public function getHandler(): callable
     {
         return $this->handler;
     }

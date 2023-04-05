@@ -14,7 +14,8 @@ class RouteContainer
      * @param Route $route
      * @return void
      */
-    function add(Route $route) : void {
+    function add(Route $route): void
+    {
         $this->routes[$route->getMethod()][] = $route;
     }
 
@@ -25,9 +26,12 @@ class RouteContainer
      * @param Uri $uri
      * @return Route|null
      */
-    function find(string $method, Uri $uri) : Route|null {
+    function find(string $method, Uri $uri): Route|null
+    {
         foreach ($this->routes[$method] as $route) {
-            if ($route->getUri()->matches($uri)) return $route;
+            if ($route->getUri()->matches($uri)) {
+                return $route;
+            }
         }
         return null;
     }

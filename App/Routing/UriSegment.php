@@ -16,9 +16,12 @@ class UriSegment
         // Check if segment starts with '{' and ends with '}'.
         $this->parameter = preg_match('/^{.*}$/', $segment);
 
-        //
-        if ($this->parameter) $this->name = substr($segment, 1, -1);
-        else $this->name = $segment;
+        // Set the name of the segment
+        if ($this->parameter) {
+            $this->name = substr($segment, 1, -1);
+        } else {
+            $this->name = $segment;
+        }
     }
 
     /**

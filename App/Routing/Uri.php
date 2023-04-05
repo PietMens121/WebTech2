@@ -21,8 +21,9 @@ class Uri
 
         // Slice the URI into segments
         $slices = explode("/", $uri);
-        foreach ($slices as $slice)
+        foreach ($slices as $slice) {
             $this->segments[] = new UriSegment($slice);
+        }
 
         // Set length to amount of segments
         $this->length = count($this->segments);
@@ -33,15 +34,22 @@ class Uri
      * @param Uri $uri URI to compare.
      * @return bool True if they match.
      */
-    public function matches(Uri $uri) : bool {
+    public function matches(Uri $uri): bool
+    {
         // Check if URIs have same amount of segments
-        if ($this->length != $uri->getLength()) return false;
+        if ($this->length != $uri->getLength()) {
+            return false;
+        }
 
         // Check if URI's match
         $segments = $uri->getSegments();
         for ($i = 0; $i < $this->length; $i++) {
-            if ($this->segments[$i]->isParameter()) continue;   // Skip iteration if segment is a parameter
-            if ($this->segments[$i] != $segments[$i]) return false;
+            if ($this->segments[$i]->isParameter()) {
+                continue;
+            }   // Skip iteration if segment is a parameter
+            if ($this->segments[$i] != $segments[$i]) {
+                return false;
+            }
         }
 
         return true;
@@ -79,14 +87,16 @@ class Uri
      * @param Uri $routeUri The matching Route URI.
      * @return string[] An array containing the extracted parameters.
      */
-    public function extractParameters(Uri $routeUri) : array {
+    public function extractParameters(Uri $routeUri): array
+    {
         $parameters = [];
         $routeUriSegments = $routeUri->getSegments();
 
         for ($i = 0; $i < $routeUri->getLength(); $i++) {
             // If a segment corresponds to a parameter store the segment name.
-            if ($routeUriSegments[$i]->isParameter())
+            if ($routeUriSegments[$i]->isParameter()) {
                 $parameters[] = $this->segments[$i]->getName();
+            }
         }
         return $parameters;
     }
