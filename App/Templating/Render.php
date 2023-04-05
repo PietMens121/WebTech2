@@ -18,7 +18,7 @@ class Render
      */
     public static function view($filename, $data = array()): void
     {
-        self::$cache_path = $_SERVER['DOCUMENT_ROOT'] . '/temp';
+        self::$cache_path = $_SERVER['DOCUMENT_ROOT'] . '/../temp';
         self::clear_cache();
         $file = self::prepare($filename);
         extract($data, EXTR_SKIP);
@@ -31,7 +31,6 @@ class Render
      */
     private static function prepare($filename): bool|string
     {
-//        creating temp file so the original doesnt change
         $temp = tempnam(self::$cache_path, 'TMP_');
         $code = self::includeFiles($filename);
         $code = self::compileView($code);
