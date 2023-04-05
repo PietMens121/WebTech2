@@ -9,7 +9,7 @@ use src\controllers\HomePageController;
 Route::get('/', [new HomePageController, 'index']);
 
 Route::get('/test', function () {
-    Render::view('test.html');
+    Render::view('test.html', ['user' => 'Piet']);
 });
 
 Route::get('/kaas/{parameter}', function ($parameter) {
