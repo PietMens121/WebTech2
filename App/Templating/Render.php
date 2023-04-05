@@ -40,8 +40,8 @@ class Render
 
     private static function clear_cache(): void
     {
-        if(self::$clearing_cache){
-            foreach(glob(self::$cache_path . '/TMP_*') as $file){
+        if (self::$clearing_cache) {
+            foreach (glob(self::$cache_path . '/TMP_*') as $file) {
                 unlink($file);
             }
         }

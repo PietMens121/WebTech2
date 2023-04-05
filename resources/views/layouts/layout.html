@@ -1,3 +1,5 @@
+@extends(layouts/navbar.html)
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +7,10 @@
     <title>Title</title>
 </head>
 <body>
-    <div class="container">
-        @yield(body)
-    </div>
+@yield(navbar)
+
+<div class="container">
+    @yield(body)
+</div>
 </body>
 </html>
