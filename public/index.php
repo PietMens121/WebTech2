@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\RequestHandler;
 use App\Routing\Router;
 use App\Service\DotEnv;
+use App\Http\ServerRequest;
 
 // Autoload classes
 define('BASE_PATH', realpath(dirname('../../')));
@@ -20,4 +22,6 @@ session_start();
 
 //Router
 require_once BASE_PATH . '/routes/web.php';
-Router::getInstance()->handleRequest();
+
+$requestHandler = new RequestHandler();
+$requestHandler->handle(ServerRequest::createFromGlobals());
