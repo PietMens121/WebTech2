@@ -3,7 +3,11 @@
 @section(body)
 
     {{ $user->username }}
-    {{ $user->role()->name }}
+    {{ $role->name}}
+
+    @foreach($coins as $coin)
+        {{ $coin->value }}
+    @endforeach
 
 @endsection()
 

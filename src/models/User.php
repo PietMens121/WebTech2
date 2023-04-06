@@ -4,6 +4,7 @@ namespace src\models;
 
 use App\Database\Model;
 use App\Database\Relations\HasOne;
+use App\Database\Relations\Relation;
 use src\models\Role;
 
 /**
@@ -20,13 +21,13 @@ class User extends Model
         'username',
         'password'
     ];
-    public function role(): Model
+    public function role(): Model|null
     {
-        return $this->hasOne(Role::class);
+        return Relation::hasOne($this, Role::class);
     }
 
     public function coins(): array
     {
-        return $this->hasMany(Coin::class);
+        return Relation::hasMany($this,Coin::class);
     }
 }

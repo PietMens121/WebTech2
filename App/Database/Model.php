@@ -12,13 +12,18 @@ abstract class Model
 {
     protected string $table;
     protected array $fillable;
-    protected PDO $conn;
-    protected static string $primary_key = 'id';
+    private PDO $conn;
+    public string $primary_key = 'id';
 
     public function __construct()
     {
         $sql = new MySQL();
         $this->conn = $sql->connect();
+    }
+
+    public function __isset(string $name): bool
+    {
+        return false;
     }
 
     /**
@@ -27,7 +32,7 @@ abstract class Model
      * @param $id
      * @return array|false
      */
-    public function find($id): bool|Model
+    public function find($id): null|Model
     {
         $query = sprintf('SELECT * FROM %s WHERE id = %s', $this->table, $id);
 
@@ -53,7 +58,7 @@ abstract class Model
      * @param $operator
      * @return array|false
      */
-    public function where($column, $value, $operator = '=')
+    public function where($column, $value, $operator = '='): false|array
     {
         $query = $this->whereQuery($column, $value, $operator);
         return $this->fetchAll($query);
@@ -65,7 +70,7 @@ abstract class Model
         return $this->fetchOne($query);
     }
 
-    public function whereQuery($column, $value, $operator)
+    public function whereQuery($column, $value, $operator): string
     {
         return sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
     }
@@ -103,28 +108,19 @@ abstract class Model
     }
 
     /**
-     * find model based on id returns ModelNotFound exception if no model is found
-     *
-     * @param
-     * @return Model|false
-     */
-    public function hasOne(string $relation_model, string $foreign_key = '')
-    {
-        return Relation::hasOne($this, $relation_model, $foreign_key);
-    }
-
-    /**
      * fetch a single model
      *
      * @param $query
      * @return Model
      */
-    private function fetchOne($query): Model
+    private function fetchOne($query): Model|null
     {
         $pdo = $this->conn->prepare($query);
         $pdo->execute();
         $columns = $pdo->fetch(PDO::FETCH_ASSOC);
-
+        if (!$columns){
+            return null;
+        }
         foreach ($columns as $key => $value) {
             $this->{$key} = $value;
         }
@@ -139,21 +135,27 @@ abstract class Model
      */
     private function fetchAll($query): array
     {
-        echo '<pre>' , var_dump($query) , '</pre>';
+        // prepare and fetch all results
         $pdo = $this->conn->prepare($query);
         $pdo->execute();
         $result = $pdo->fetchAll(PDO::FETCH_ASSOC);
-        echo '<pre>' , var_dump($result) , '</pre>';
+
+//        In case no results found return this empty array
         $models = array();
+
+//        Go through all results
         foreach($result as $model){
+//            Create new models
             $reflect = (new ReflectionClass($this))->getName();
             $new_model = new $reflect();
             foreach($model as $key => $value){
+//                Assign properties to the models
                 $new_model->{$key} = $value;
             }
+//            Push the models to array
             $models[] = $new_model;
         }
-
+//          return the models or return empty array
         return $models;
     }
 }

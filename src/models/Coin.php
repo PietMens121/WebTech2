@@ -16,5 +16,6 @@ class Coin extends Model
     protected array $fillable = [
         'user_id',
         'name',
+        'value'
     ];
 }
