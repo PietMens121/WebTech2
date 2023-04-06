@@ -24,4 +24,4 @@ session_start();
 require_once BASE_PATH . '/routes/web.php';
 
 $requestHandler = new RequestHandler();
-$requestHandler->handle(ServerRequest::createFromGlobals());
+$response = $requestHandler->handle(ServerRequest::createFromGlobals());

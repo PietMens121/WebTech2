@@ -63,17 +63,17 @@ class ServerRequest implements ServerRequestInterface
         $this->attributes = $attributes;
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
 
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return is_null($this->headers[$name]);
     }
@@ -83,37 +83,37 @@ class ServerRequest implements ServerRequestInterface
         return $this->headers[$name];
     }
 
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
         return $this->requestTarget;
     }
 
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    public function getUri()
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
 
-    public function getServerParams()
+    public function getServerParams(): array
     {
         return $_SERVER;
     }
 
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
         return $this->cookieParams;
     }
 
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
         return $this->queryParams;
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
