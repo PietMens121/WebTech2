@@ -2,6 +2,8 @@
 
 namespace App\Routing;
 
+use App\Http\Path;
+
 class RouteContainer
 {
     /**

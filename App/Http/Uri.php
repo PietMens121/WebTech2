@@ -11,7 +11,6 @@ class Uri implements  UriInterface
 
         $scheme = $uriParts['scheme'] ?? null;
         $userInfo = $uriParts['user'] ?? '';
-        $userInfo .= $uriParts['pass'] ? ':' . $uriParts['pass'] : '';
         $host = $uriParts['host'] ?? '';
         $port = $uriParts['port'] ?? null;
         $path = $uriParts['path'] ?? '';
@@ -21,13 +20,13 @@ class Uri implements  UriInterface
         return new Uri($scheme, $userInfo, $host, $port, $path, $query, $fragment);
     }
 
-    private $scheme;
-    private $userInfo;
-    private $host;
-    private $port;
-    private $path;
-    private $query;
-    private $fragment;
+    private ?string $scheme;
+    private string $userInfo;
+    private string $host;
+    private ?int $port;
+    private string $path;
+    private string $query;
+    private string $fragment;
 
     public function __construct(string $scheme = null, string $userInfo = '', string $host = '', int $port = null, string $path = '', string $query = '', string $fragment = '')
     {
@@ -40,17 +39,14 @@ class Uri implements  UriInterface
         $this->fragment = $fragment;
     }
 
-    public function getScheme()
+    public function getScheme(): ?string
     {
         return $this->scheme;
     }
 
-    public function getAuthority()
+    public function getAuthority(): string
     {
-        $authority = '';
-        if ($this->userInfo !== null || $this->host !== null) {
-            $authority .= $this->getUserInfo() . '@';
-        }
+        $authority = $this->getUserInfo() . '@';
         $authority .= $this->getHost();
         if ($this->port !== null) {
             $authority .= ':' . $this->getPort();
@@ -58,88 +54,40 @@ class Uri implements  UriInterface
         return $authority;
     }
 
-    public function getUserInfo()
+    public function getUserInfo(): string
     {
         return $this->userInfo;
     }
 
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }
 
-    public function getPort()
+    public function getPort(): ?int
     {
         return $this->port;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->query;
     }
 
-    public function getFragment()
+    public function getFragment(): string
     {
         return $this->fragment;
-    }
-
-    public function withScheme($scheme)
-    {
-        $clone = clone $this;
-        $clone->scheme = $this->filterScheme($scheme);
-        return $clone;
-    }
-
-    public function withUserInfo($user, $password = null)
-    {
-        $clone = clone $this;
-        $clone->userInfo = $this->filterUserInfo($user, $password);
-        return $clone;
-    }
-
-    public function withHost($host)
-    {
-        $clone = clone $this;
-        $clone->host = $this->filterHost($host);
-        return $clone;
-    }
-
-    public function withPort($port)
-    {
-        $clone = clone $this;
-        $clone->port = $this->filterPort($port);
-        return $clone;
-    }
-
-    public function withPath($path)
-    {
-        $clone = clone $this;
-        $clone->path = $this->filterPath($path);
-        return $clone;
-    }
-
-    public function withQuery($query)
-    {
-        $clone = clone $this;
-        $clone->query = $this->filterQueryAndFragment($query);
-        return $clone;
-    }
-
-    public function withFragment($fragment)
-    {
-        $clone = clone $this;
-        $clone->fragment = $this->filterQueryAndFragment($fragment);
-        return $clone;
     }
 
     public function __toString()
     {
         $uri = '';
+
         if ($this->scheme !== null) {
             $uri .= $this->getScheme() . ':';
         }
@@ -147,49 +95,76 @@ class Uri implements  UriInterface
         if ($authority !== '') {
             $uri .= '//' . $authority;
         }
-        if ($this->path !== null) {
-            $uri .= $this->filterPath($this->getPath());
-        }
-        if ($this->query !== null) {
-            $uri .= '?' . $this->filterQueryAndFragment($this->getQuery());
-        }
-        if ($this->fragment !== null) {
-            $uri .= '#' . $this->filterQueryAndFragment($this->getFragment());
-        }
+
+        $uri .= $this->filterPath($this->getPath());
+        $uri .= '?' . $this->filterQueryAndFragment($this->getQuery());
+        $uri .= '#' . $this->filterQueryAndFragment($this->getFragment());
+
         return $uri;
     }
 
-    private function filterScheme($scheme)
-    {
-        return preg_replace('/[^a-z0-9+.-]+/i', '', $scheme);
-    }
 
-    private function filterUserInfo($userInfo)
+    private function filterPath(string $path): ?string
     {
-        return rawurlencode(str_replace(':', '%3A', $userInfo));
-    }
+        $reservedChars = 'a-zA-Z0-9_\-.~';
+        $subDelims = '!$&\'()*+,;=';
+        $encodedChars = '%[A-Fa-f0-9]{2}';
+        $regex = '/[^' . $reservedChars . $subDelims . $encodedChars . ']+/u';
 
-    private function filterHost($host)
-    {
-        return strtolower(preg_replace('/[\x00-\x1f\x7f-\xff]/', '', $host));
-    }
-
-    private function filterPort($port)
-    {
-        return $port !== null ? (int)$port : null;
-    }
-
-    private function filterPath($path)
-    {
-        return preg_replace_callback('/[^a-zA-Z0-9_\-.~!&\'()*+,;=%:@\/]++|%(?![A-Fa-f0-9]{2})/u', function($matches) {
+        return preg_replace_callback($regex, function ($matches) {
             return rawurlencode($matches[0]);
         }, $path);
     }
 
-    private function filterQueryAndFragment($str)
+    private function filterQueryAndFragment(string $str): ?string
     {
-        return preg_replace_callback('/[^a-zA-Z0-9_\-.~!&\'()*+,;=%:@\/?#\[\]]++|%(?![A-Fa-f0-9]{2})/u', function($matches) {
+        $reservedChars = 'a-zA-Z0-9_\-.~';
+        $genDelims = ':\/?#\[\]@';
+        $subDelims = '!$&\'()*+,;=';
+        $encodedChars = '%[A-Fa-f0-9]{2}';
+        $regex = '/[^' . $reservedChars . $genDelims . $subDelims . $encodedChars . ']+/u';
+
+        return preg_replace_callback($regex, function ($matches) {
             return rawurlencode($matches[0]);
         }, $str);
+    }
+
+
+    //-----------------------------------------------------------------
+
+
+    public function withScheme($scheme) : null
+    {
+        return null;
+    }
+
+    public function withUserInfo($user, $password = null) : null
+    {
+        return null;
+    }
+
+    public function withHost($host) : null
+    {
+        return null;
+    }
+
+    public function withPort($port) : null
+    {
+        return null;
+    }
+
+    public function withPath($path) : null
+    {
+        return null;
+    }
+
+    public function withQuery($query) : null
+    {
+        return null;
+    }
+
+    public function withFragment($fragment) : null
+    {
+        return null;
     }
 }
