@@ -2,7 +2,10 @@
 
 namespace App\Database;
 
+use App\Database\Relations\HasOne;
+use App\Database\Relations\Relation;
 use PDO;
+use ReflectionClass;
 
 #[\AllowDynamicProperties]
 abstract class Model
@@ -10,7 +13,7 @@ abstract class Model
     protected string $table;
     protected array $fillable;
     protected PDO $conn;
-    protected $primaryKey = 'id';
+    protected static string $primary_key = 'id';
 
     public function __construct()
     {
@@ -24,12 +27,11 @@ abstract class Model
      * @param $id
      * @return array|false
      */
-    public function find($id): bool|array
+    public function find($id): bool|Model
     {
         $query = sprintf('SELECT * FROM %s WHERE id = %s', $this->table, $id);
-        $pdo = $this->conn->prepare($query);
-        $pdo->execute();
-        return $pdo->fetch(PDO::FETCH_ASSOC);
+
+        return $this->fetchOne($query);
     }
 
     /**
@@ -40,9 +42,7 @@ abstract class Model
     public function all(): bool|array
     {
         $query = sprintf('SELECT * FROM %s', $this->table);
-        $pdo = $this->conn->prepare($query);
-        $pdo->execute();
-        return $pdo->fetchAll(PDO::FETCH_ASSOC);
+        return $this->fetchAll($query);
     }
 
     /**
@@ -55,10 +55,19 @@ abstract class Model
      */
     public function where($column, $value, $operator = '=')
     {
-        $query = sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
-        $pdo = $this->conn->prepare($query);
-        $pdo->execute();
-        return $pdo->fetchAll(PDO::FETCH_ASSOC);
+        $query = $this->whereQuery($column, $value, $operator);
+        return $this->fetchAll($query);
+    }
+
+    public function whereOne($column, $value, $operator = '=')
+    {
+        $query = $this->whereQuery($column, $value, $operator);
+        return $this->fetchOne($query);
+    }
+
+    public function whereQuery($column, $value, $operator)
+    {
+        return sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
     }
 
     /**
@@ -82,7 +91,6 @@ abstract class Model
 
         $query = sprintf('INSERT INTO %s SET %s ', $this->table, $columns);
 
-        var_dump($query);
 
         try {
             $pdo = $this->conn->prepare($query)->execute($values);
@@ -97,15 +105,55 @@ abstract class Model
     /**
      * find model based on id returns ModelNotFound exception if no model is found
      *
-     * @param Model $model
-     * @return array|false
+     * @param
+     * @return Model|false
      */
-    public function hasOne(Model $model)
+    public function hasOne(string $relation_model, string $foreign_key = '')
     {
-        $reflection = new \ReflectionObject($this);
-        $query = sprintf('SELECT * FROM %s WHERE %s "%s"', $model->table, $reflection->getName() . '.id', $reflection->getProperty('primaryKey'));
+        return Relation::hasOne($this, $relation_model, $foreign_key);
+    }
+
+    /**
+     * fetch a single model
+     *
+     * @param $query
+     * @return Model
+     */
+    private function fetchOne($query): Model
+    {
         $pdo = $this->conn->prepare($query);
         $pdo->execute();
-        return $pdo->fetchAll(PDO::FETCH_ASSOC);
+        $columns = $pdo->fetch(PDO::FETCH_ASSOC);
+
+        foreach ($columns as $key => $value) {
+            $this->{$key} = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * fetch multiple models
+     *
+     * @param $query
+     * @return array
+     */
+    private function fetchAll($query): array
+    {
+        echo '<pre>' , var_dump($query) , '</pre>';
+        $pdo = $this->conn->prepare($query);
+        $pdo->execute();
+        $result = $pdo->fetchAll(PDO::FETCH_ASSOC);
+        echo '<pre>' , var_dump($result) , '</pre>';
+        $models = array();
+        foreach($result as $model){
+            $reflect = (new ReflectionClass($this))->getName();
+            $new_model = new $reflect();
+            foreach($model as $key => $value){
+                $new_model->{$key} = $value;
+            }
+            $models[] = $new_model;
+        }
+
+        return $models;
     }
 }

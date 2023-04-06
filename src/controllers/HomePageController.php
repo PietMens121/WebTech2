@@ -3,6 +3,7 @@
 namespace src\controllers;
 
 
+use App\Database\Builder;
 use App\Http\Response;
 use App\Service\dd;
 use App\Templating\Render;
@@ -13,11 +14,11 @@ class HomePageController extends Controller
 {
     public function index()
     {
-        $users = new User();
-        $users = $users->role();
+        $user = new User();
+        $user = $user->find(1);
 
         Render::view('test.html', [
-            'users' => $users
+            'user' => $user
         ]);
     }
 }

@@ -2,9 +2,8 @@
 
 @section(body)
 
-@foreach($users as $user)
-    {{ $user['username'] }}
-@endforeach
+    {{ $user->username }}
+    {{ $user->role()->name }}
 
 @endsection()
 
