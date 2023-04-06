@@ -19,7 +19,7 @@ class HomePageController extends Controller
 
         $coins = $user->Coins();
 
-        $role = $user->role()->whereOne('name', 'banaan');
+        $role = $user->role()->whereOne('name', 'Admin');
 
         Render::view('test.html', [
             'user' => $user,
