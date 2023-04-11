@@ -2,13 +2,17 @@
 
 namespace App\Database\Relations;
 
+use App\Database\Builder\QueryBuilder;
 use App\Database\Model;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use src\models\User;
 
 class Relation
 {
+    private static Model $model;
+    private static Model $relation_model;
 
     private static function formatForeignKey(Model $model, string $foreign_key): string
     {
@@ -19,17 +23,13 @@ class Relation
         return $foreign_key;
     }
 
-    public static function formatPivotTable(Model $model, Model $relation_model, string $pivot_table): string
+    public static function formatPivotTable(string $pivot_table): string
     {
         if ($pivot_table === '') {
-            $reflection = new ReflectionClass($model);
-            $reflection_relation = new ReflectionClass($relation_model);
-
             $order_array = [];
-            array_push($order_array, $reflection->getShortName(), $reflection_relation->getShortName());
-            sort($order_array);
 
-//            $pivot_table = strtolower($order_array[0]) . '_' . strtolower($order_array[1]);
+            array_push($order_array, self::$model->getShortName(), self::$relation_model->getShortName());
+            sort($order_array);
 
             $pivot_table = implode('_', $order_array);
             $pivot_table = strtolower($pivot_table);
@@ -85,15 +85,45 @@ class Relation
 
     public static function BelongsToMany(Model $model, string $relation_model, string $pivot_table = ''): array
     {
-        $relation_model = new ($relation_model)();
+        self::$model = $model;
+        self::$relation_model = new ($relation_model)();
 
-        $pivot_table = self::formatPivotTable($model, $relation_model, $pivot_table);
-
-//        return $relation_model->join();
+        self::prepareRelationJoin($pivot_table);
 
         return array();
-
-//        echo '<pre>' , var_dump($pivot_table) , '</pre>';
-
     }
+
+    public static function prepareRelationJoin($pivot_table): QueryBuilder
+    {
+        $pivot_table = self::formatPivotTable($pivot_table);
+
+
+        $query = new QueryBuilder();
+        $query->from(self::$model->getTable());
+
+        $query = self::prepareFirstJoin($query, $pivot_table);
+        $query = self::prepareSecondJoin($query, $pivot_table);
+
+//        $query->where('users.id = "1"');
+        $query->get();
+
+
+        return $query;
+    }
+
+    public static function prepareFirstJoin(QueryBuilder $query, $pivot): QueryBuilder
+    {
+        $constraint = self::$model->getTable() . '.id';
+
+
+        return $query->join($pivot, $constraint, '=', $pivot . '.' . self::$model->getShortName() . '_id');
+    }
+
+    public static function prepareSecondJoin(QueryBuilder $query, string $pivot): QueryBuilder
+    {
+        $constraint = $pivot . '.' . self::$relation_model->getShortName() . '_id';
+
+        return $query->join(self::$relation_model->getTable(), $constraint, '=' ,self::$relation_model->getTable() . '.id');
+    }
+
 }

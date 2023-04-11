@@ -2,6 +2,7 @@
 
 namespace App\Database;
 
+use App\Database\Builder\QueryBuilder;
 use App\Database\Relations\HasOne;
 use App\Database\Relations\Relation;
 use PDO;
@@ -75,21 +76,6 @@ abstract class Model
         return sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
     }
 
-//    public function join():array
-//    {
-//        //SELECT * FROM Users
-//        //INNER JOIN exam_user
-//        //ON users.id = exam_user.user_id
-//        //INNER JOIN Exams
-//        //ON exam_user.exam_id = Exams.id
-//        //WHERE users.id = 1
-//
-////       $user->exams()
-//
-//
-//        $query = sprintf('SELECT * FROM %s INNER JOIN %s ON %s.ID = %s ');
-//    }
-
     /**
      * Save the new/updated model in the database
      *
@@ -128,7 +114,7 @@ abstract class Model
      * @param $query
      * @return Model
      */
-    private function fetchOne($query): Model|null
+    private function fetchOne(string $query): Model|null
     {
         $pdo = $this->conn->prepare($query);
         $pdo->execute();
@@ -148,7 +134,7 @@ abstract class Model
      * @param $query
      * @return array
      */
-    private function fetchAll($query): array
+    private function fetchAll(string $query): array
     {
         // prepare and fetch all results
         $pdo = $this->conn->prepare($query);
@@ -172,5 +158,16 @@ abstract class Model
         }
 //          return the models or return empty array
         return $models;
+    }
+
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    public function getShortName(): string
+    {
+        $reflection = new ReflectionClass($this);
+        return $reflection->getShortName();
     }
 }

@@ -13,7 +13,7 @@ use App\Database\Relations\Relation;
 
 class Exam extends Model
 {
-    protected string $table = 'Users';
+    protected string $table = 'Exams';
 
     protected array $fillable = [
         'name'

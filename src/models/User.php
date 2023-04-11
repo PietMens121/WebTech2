@@ -15,7 +15,7 @@ use src\models\Role;
 
 class User extends Model
 {
-    protected string $table = 'Users';
+    public string $table = 'Users';
 
     protected array $fillable = [
         'username',
