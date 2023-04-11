@@ -2,6 +2,8 @@
 
 use App\container\Container;
 use App\Http\RequestHandler;
+use App\Routing\Route;
+use App\Routing\Router;
 use App\Service\DotEnv;
 use App\Http\ServerRequest;
 
@@ -21,7 +23,13 @@ require BASE_PATH . "/vendor/autoload.php";
 (new DotEnv(BASE_PATH . '/.env'))->load();
 
 // Initialise Dependency container
-$container = new Container();
+$services = [
+    Router::class => new Router(),
+];
+
+$container = new Container($services);
+
+Route::setContainer($container);
 
 // Start session
 session_start();
@@ -29,5 +37,5 @@ session_start();
 //Router
 require_once BASE_PATH . '/routes/web.php';
 
-$requestHandler = new RequestHandler();
+$requestHandler = new RequestHandler($container);
 $response = $requestHandler->handle(ServerRequest::createFromGlobals());

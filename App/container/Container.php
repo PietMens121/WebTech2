@@ -9,7 +9,7 @@ class Container
     /**
      * @var array<string, mixed> An array of services registered in the container.
      */
-    private array $services;
+    private array $services = [];
 
     /**
      * Creates a new instance of the container.
@@ -27,7 +27,7 @@ class Container
      * @param mixed $service The service to register.
      * @return void
      */
-    public function set(string $id, mixed $service) : void
+    public function set(string $id, mixed $service): void
     {
         $this->services[$id] = $service;
     }
@@ -37,7 +37,7 @@ class Container
      * @param array<string, mixed> $services An array of services to register.
      * @return void
      */
-    public function add(array $services) : void
+    public function add(array $services): void
     {
         $this->services += $services;
     }

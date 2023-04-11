@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Templating\Render;
-use Couchbase\View;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 

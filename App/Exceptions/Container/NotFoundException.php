@@ -1,12 +1,12 @@
 <?php
 namespace App\Exceptions\Container;
 
-use Psr\Container\NotFoundExceptionInterface;
+use InvalidArgumentException;
 
 /**
  * Undocumented class
  */
-class NotFoundException extends InvalidArgumentException implements NotFoundExceptionInterface
+class NotFoundException extends InvalidArgumentException
 {
 
 }

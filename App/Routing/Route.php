@@ -2,10 +2,18 @@
 
 namespace App\Routing;
 
+use App\container\Container;
 use App\Http\Path;
 
 class Route
 {
+    private static Container $container;
+
+    static function setContainer(Container $container) : void
+    {
+        self::$container = $container;
+    }
+
     /**
      * Creates route with GET method.
      * @param string $path
@@ -14,7 +22,11 @@ class Route
      */
     public static function get(string $path, callable $callback): void
     {
-        Router::getInstance()->get($path, $callback);
+        /**
+         * @var $router Router
+         */
+        $router = self::$container->get(Router::class);
+        $router->get($path, $callback);
     }
 
     /**
@@ -25,7 +37,11 @@ class Route
      */
     public static function post(string $path, callable $callback): void
     {
-        Router::getInstance()->post($path, $callback);
+        /**
+         * @var $router Router
+         */
+        $router = self::$container->get(Router::class);
+        $router->post($path, $callback);
     }
 
 

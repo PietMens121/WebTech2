@@ -9,22 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
-    //TODO: dependency injection
-    private static Router $instance;
-
-    /**
-     * Singleton method
-     * @return Router
-     */
-    public static function getInstance(): Router
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new Router();
-        }
-        return self::$instance;
-    }
-
-
     private RouteContainer $routeContainer;
 
     /**
