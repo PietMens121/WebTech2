@@ -79,6 +79,7 @@ class Render
      */
     private static function compileView($code): mixed
     {
+        $code = self::compileAsset($code);
         $code = self::compileSection($code);
         $code = self::compileYield($code);
         $code = self::compileEcho($code);
@@ -92,48 +93,48 @@ class Render
         return $code;
     }
 
-    private static function compileEcho($code)
+    private static function compileEcho($code): array|string|null
     {
         return preg_replace('~{{\s*(.+?)\s*}}~is', '<?php echo $1 ?>', $code);
     }
 
-    private static function compileIf($code)
+    private static function compileIf($code): array|string|null
     {
         return preg_replace('~@if([^;]*).~is', '<?php if$1: ?>', $code);
     }
 
-    private static function compileElseIf($code)
+    private static function compileElseIf($code): array|string|null
     {
         return preg_replace('~@elseif([^;]*).~is', '<?php elseif$1: ?>', $code);
     }
 
-    private static function compileElse($code)
+    private static function compileElse($code): array|string|null
     {
         return preg_replace('~@else;~is', '<?php else: ?>', $code);
     }
 
-    private static function compileEndIf($code)
+    private static function compileEndIf($code): array|string|null
     {
         return preg_replace('~@endif[^;]*.~is', '<?php endif; ?>', $code);
     }
 
-    private static function compileForEach($code)
+    private static function compileForEach($code): array|string|null
     {
         return preg_replace('~@foreach\(([^)]*)\)~', '<?php foreach($1): ?>', $code);
     }
 
-    private static function compileEndForEach($code)
+    private static function compileEndForEach($code): array|string|null
     {
         return preg_replace('~@endforeach~', '<?php endforeach ?>', $code);
     }
 
-    private static function compilePHP($code)
+    private static function compilePHP($code): array|string|null
     {
         return preg_replace('~\@php\((.*)(?=\)\;)..~ism', '<?php $1 ?>', $code);
     }
 
 
-    private static function compileSection($code)
+    private static function compileSection($code): array|string|null
     {
         preg_match_all('~@section\(([^)]*)\)(.*?)@endsection\(\)~is', $code, $matches, PREG_SET_ORDER);
         foreach ($matches as $value) {
@@ -150,12 +151,18 @@ class Render
         return $code;
     }
 
-    private static function compileYield($code)
+    private static function compileYield($code): array|string|null
     {
         foreach (self::$sections as $section => $value) {
             $code = preg_replace('~@yield\(' . $section . '\)~is', $value, $code);
         }
         $code = preg_replace('~@yield\(([^)]*)\)~is', '', $code);
         return $code;
+    }
+
+    private static function compileAsset($code): array|string|null
+    {
+        $replacement = 'http://'. $_SERVER['HTTP_HOST'] . '/resources/';
+        return preg_replace('~\{\{\s*asset\(([^)]*)\) \}\}~ism', $replacement . "$1", $code);
     }
 }
