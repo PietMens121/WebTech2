@@ -3,8 +3,12 @@
 namespace src\models;
 
 use App\Database\Model;
+use App\Database\Relations\HasOne;
+use App\Database\Relations\Relation;
+use src\models\Role;
 
 /**
+ * @property int $id
  * @property string $username
  * @property string $password
  */
