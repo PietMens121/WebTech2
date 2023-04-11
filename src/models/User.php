@@ -19,6 +19,18 @@ class User extends Model
 
     protected array $fillable = [
         'username',
-        'password'
+        'password',
+        'role_id',
     ];
+
+    public function Role(): Model|null
+    {
+        return Relation::BelongsTo($this, Role::class);
+    }
+
+    public function Exams(): array
+    {
+        return Relation::BelongsToMany($this, Exam::class);
+    }
+
 }

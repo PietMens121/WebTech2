@@ -75,6 +75,21 @@ abstract class Model
         return sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
     }
 
+//    public function join():array
+//    {
+//        //SELECT * FROM Users
+//        //INNER JOIN exam_user
+//        //ON users.id = exam_user.user_id
+//        //INNER JOIN Exams
+//        //ON exam_user.exam_id = Exams.id
+//        //WHERE users.id = 1
+//
+////       $user->exams()
+//
+//
+//        $query = sprintf('SELECT * FROM %s INNER JOIN %s ON %s.ID = %s ');
+//    }
+
     /**
      * Save the new/updated model in the database
      *

@@ -18,8 +18,8 @@ class HomePageController extends Controller
         $user = new User();
         $user = $user->find(1);
 
-        Render::view('test.html', [
-            'user' => $user,
+        Render::view('home.html', [
+            'user' => $user
         ]);
     }
 }

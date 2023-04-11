@@ -163,6 +163,6 @@ class Render
     private static function compileAsset($code): array|string|null
     {
         $replacement = 'http://'. $_SERVER['HTTP_HOST'] . '/resources/';
-        return preg_replace('~\{\{\s*asset\(([^)]*)\) \}\}~ism', $replacement . "$1", $code);
+        return preg_replace('~\{\{\s*asset\(([^)]*)\)\s*\}\}~ism', $replacement . "$1", $code);
     }
 }
