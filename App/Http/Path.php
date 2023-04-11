@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Routing;
+namespace App\Http;
 
-class Uri
+class Path
 {
-    private string $uri;
+    private string $path;
     /**
-     * @var UriSegment[]
+     * @var PathSegment[]
      */
     private array $segments = [];
     private int $length;
 
     /**
      * Constructor
-     * @param string $uri
+     * @param string $path
      */
-    public function __construct(string $uri)
+    public function __construct(string $path)
     {
-        $this->uri = $uri;
+        $this->path = $path;
 
-        // Slice the URI into segments
-        $slices = explode("/", $uri);
+        // Slice the Path into segments
+        $slices = explode("/", $path);
         foreach ($slices as $slice) {
-            $this->segments[] = new UriSegment($slice);
+            $this->segments[] = new PathSegment($slice);
         }
 
         // Set length to amount of segments
@@ -30,19 +30,19 @@ class Uri
     }
 
     /**
-     * Checks if this URI matches another URI.
-     * @param Uri $uri URI to compare.
+     * Checks if this Path matches another Path.
+     * @param Path $path Path to compare.
      * @return bool True if they match.
      */
-    public function matches(Uri $uri): bool
+    public function matches(Path $path): bool
     {
-        // Check if URIs have same amount of segments
-        if ($this->length != $uri->getLength()) {
+        // Check if Paths have same amount of segments
+        if ($this->length != $path->getLength()) {
             return false;
         }
 
-        // Check if URI's match
-        $segments = $uri->getSegments();
+        // Check if Paths match
+        $segments = $path->getSegments();
         for ($i = 0; $i < $this->length; $i++) {
             if ($this->segments[$i]->isParameter()) {
                 continue;
@@ -56,17 +56,17 @@ class Uri
     }
 
     /**
-     * Getter for the URI string.
+     * Getter for the Path string.
      * @return string
      */
-    public function getUri(): string
+    public function getPath(): string
     {
-        return $this->uri;
+        return $this->path;
     }
 
     /**
-     * Getter for {@link UriSegment}s of the URI.
-     * @return UriSegment[]
+     * Getter for {@link PathSegment}s of the Path.
+     * @return PathSegment[]
      */
     public function getSegments(): array
     {
@@ -74,7 +74,7 @@ class Uri
     }
 
     /**
-     * Getter for amount of segments in URI.
+     * Getter for amount of segments in Path.
      * @return int
      */
     public function getLength(): int
@@ -83,18 +83,18 @@ class Uri
     }
 
     /**
-     * Extracts the parameters from a given URI based on the matching Route URI.
-     * @param Uri $routeUri The matching Route URI.
+     * Extracts the parameters from a given Path based on the matching Route Path.
+     * @param Path $path The matching Route Path.
      * @return string[] An array containing the extracted parameters.
      */
-    public function extractParameters(Uri $routeUri): array
+    public function extractParameters(Path $path): array
     {
         $parameters = [];
-        $routeUriSegments = $routeUri->getSegments();
+        $pathSegments = $path->getSegments();
 
-        for ($i = 0; $i < $routeUri->getLength(); $i++) {
+        for ($i = 0; $i < $path->getLength(); $i++) {
             // If a segment corresponds to a parameter store the segment name.
-            if ($routeUriSegments[$i]->isParameter()) {
+            if ($pathSegments[$i]->isParameter()) {
                 $parameters[] = $this->segments[$i]->getName();
             }
         }

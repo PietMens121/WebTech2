@@ -2,48 +2,50 @@
 
 namespace App\Routing;
 
+use App\Http\Path;
+
 class Route
 {
     /**
      * Creates route with GET method.
-     * @param string $uri
+     * @param string $path
      * @param callable $callback
      * @return void
      */
-    public static function get(string $uri, callable $callback): void
+    public static function get(string $path, callable $callback): void
     {
-        Router::getInstance()->get($uri, $callback);
+        Router::getInstance()->get($path, $callback);
     }
 
     /**
      * Creates route with POST method.
-     * @param string $uri
+     * @param string $path
      * @param callable $callback
      * @return void
      */
-    public static function post(string $uri, callable $callback): void
+    public static function post(string $path, callable $callback): void
     {
-        Router::getInstance()->post($uri, $callback);
+        Router::getInstance()->post($path, $callback);
     }
 
 
     private string $name;
     private string $method;
-    private Uri $uri;
+    private Path $path;
     private $handler;
-    private array $uriSegments;
+    private array $pathSegments;
 
     /**
      * Constructor
      * @param $method
-     * @param $uri
+     * @param $path
      * @param $handler
      * @param $name
      */
-    public function __construct($method, $uri, $handler, $name = "")
+    public function __construct($method, $path, $handler, $name = "")
     {
         $this->method = $method;
-        $this->uri = $uri;
+        $this->path = $path;
         $this->handler = $handler;
         $this->name = $name;
     }
@@ -69,12 +71,12 @@ class Route
     }
 
     /**
-     * Getter for {@link Uri} of the route.
+     * Getter for {@link Path} of the route.
      * @return string
      */
-    public function getUri(): Uri
+    public function getPath(): Path
     {
-        return $this->uri;
+        return $this->path;
     }
 
     /**

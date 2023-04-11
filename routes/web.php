@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Response;
 use App\Routing\Route;
 use App\Templating\Render;
 use src\controllers\HomePageController;
@@ -9,5 +10,5 @@ use src\controllers\HomePageController;
 Route::get('/', [new HomePageController, 'index']);
 
 Route::get('/kaas/{parameter}', function ($parameter) {
-   var_dump($parameter);
+    var_dump($parameter);
 });

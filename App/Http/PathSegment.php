@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Routing;
+namespace App\Http;
 
-class UriSegment
+class PathSegment
 {
     private string $name;
     private bool $parameter;

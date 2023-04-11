@@ -2,6 +2,8 @@
 
 namespace App\Routing;
 
+use App\Http\Path;
+
 class RouteContainer
 {
     /**
@@ -23,13 +25,13 @@ class RouteContainer
      * Find corresponding route to URI in container.
      * Returns null if no route was found.
      * @param string $method
-     * @param Uri $uri
+     * @param Path $uri
      * @return Route|null
      */
-    function find(string $method, Uri $uri): Route|null
+    function find(string $method, Path $uri): Route|null
     {
         foreach ($this->routes[$method] as $route) {
-            if ($route->getUri()->matches($uri)) {
+            if ($route->getPath()->matches($uri)) {
                 return $route;
             }
         }
