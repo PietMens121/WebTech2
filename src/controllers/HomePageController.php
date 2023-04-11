@@ -18,18 +18,8 @@ class HomePageController extends Controller
         $user = new User();
         $user = $user->find(1);
 
-        $coins = $user->Coins();
-
-        $role = $user->role()->whereOne('name', 'Admin');
-
-        $coin = new Coin();
-        $coin = $coin->find(3);
-        var_dump($coin->user()->username);
-        var_dump($coin->name);
         Render::view('test.html', [
             'user' => $user,
-            'coins' => $coins,
-            'role'=> $role
         ]);
     }
 }

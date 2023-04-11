@@ -21,13 +21,4 @@ class User extends Model
         'username',
         'password'
     ];
-    public function role(): Model|null
-    {
-        return Relation::hasOne($this, Role::class);
-    }
-
-    public function coins(): array
-    {
-        return Relation::hasMany($this,Coin::class);
-    }
 }
