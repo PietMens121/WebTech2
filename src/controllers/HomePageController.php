@@ -8,6 +8,7 @@ use App\Http\Response;
 use App\Service\dd;
 use App\Templating\Render;
 use Couchbase\View;
+use src\models\Coin;
 use src\models\User;
 
 class HomePageController extends Controller
@@ -21,6 +22,10 @@ class HomePageController extends Controller
 
         $role = $user->role()->whereOne('name', 'Admin');
 
+        $coin = new Coin();
+        $coin = $coin->find(3);
+        var_dump($coin->user()->username);
+        var_dump($coin->name);
         Render::view('test.html', [
             'user' => $user,
             'coins' => $coins,
