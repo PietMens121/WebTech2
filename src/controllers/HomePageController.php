@@ -9,6 +9,7 @@ use App\Service\dd;
 use App\Templating\Render;
 use Couchbase\View;
 use src\models\Coin;
+use src\models\Exam;
 use src\models\User;
 
 class HomePageController extends Controller
@@ -18,10 +19,11 @@ class HomePageController extends Controller
         $user = new User();
         $user = $user->find(1);
 
-        var_dump($user->Exams());
+        $exams = $user->Exams();
 
         Render::view('home.html', [
-            'user' => $user
+            'user' => $user,
+            'exams' => $exams
         ]);
     }
 }

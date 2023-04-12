@@ -88,30 +88,37 @@ class Relation
         self::$model = $model;
         self::$relation_model = new ($relation_model)();
 
-        self::prepareRelationJoin($pivot_table);
+        $results = self::prepareRelationJoin($pivot_table);
 
-        return array();
+        return $results;
     }
 
-    public static function prepareRelationJoin($pivot_table): QueryBuilder
+    private static function prepareRelationJoin($pivot_table): array
     {
         $pivot_table = self::formatPivotTable($pivot_table);
 
-
         $query = new QueryBuilder();
+        $query->select(implode(', ',self::$relation_model->getFormattedFillables()));
         $query->from(self::$model->getTable());
 
         $query = self::prepareFirstJoin($query, $pivot_table);
         $query = self::prepareSecondJoin($query, $pivot_table);
 
-//        $query->where('users.id = "1"');
-        $query->get();
+        $query->where(self::formatWhereClause());
 
+        $results = $query->get();
 
-        return $query;
+        return $results;
     }
 
-    public static function prepareFirstJoin(QueryBuilder $query, $pivot): QueryBuilder
+    private static function formatWhereClause(): string
+    {
+        $table = self::$model->getTable();
+        $primary_key = self::$model->{self::$model->primary_key};
+        return $table . '.' . self::$model->primary_key . ' = ' . $primary_key;
+    }
+
+    private static function prepareFirstJoin(QueryBuilder $query, $pivot): QueryBuilder
     {
         $constraint = self::$model->getTable() . '.id';
 
@@ -119,7 +126,7 @@ class Relation
         return $query->join($pivot, $constraint, '=', $pivot . '.' . self::$model->getShortName() . '_id');
     }
 
-    public static function prepareSecondJoin(QueryBuilder $query, string $pivot): QueryBuilder
+    private static function prepareSecondJoin(QueryBuilder $query, string $pivot): QueryBuilder
     {
         $constraint = $pivot . '.' . self::$relation_model->getShortName() . '_id';
 

@@ -16,7 +16,7 @@ class Exam extends Model
     protected string $table = 'Exams';
 
     protected array $fillable = [
-        'name'
+        'name',
     ];
 
     public function Users(): array

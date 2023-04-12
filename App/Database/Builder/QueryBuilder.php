@@ -66,34 +66,9 @@ class QueryBuilder
         $sql = new MySQL();
         $sql = $sql->connect()->prepare($this);
         $sql->execute();
+
         $results = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach($results as $result){
-            echo '<pre>' . var_dump($result['name']) . '</pre>';
-        }
-
         return $results;
-//        // prepare and fetch all results
-//        $pdo = $this->conn->prepare($query);
-//        $pdo->execute();
-//        $result = $pdo->fetchAll(PDO::FETCH_ASSOC);
-//
-////        In case no results found return this empty array
-//        $models = array();
-//
-////        Go through all results
-//        foreach($result as $model){
-////            Create new models
-//            $reflect = (new ReflectionClass($this))->getName();
-//            $new_model = new $reflect();
-//            foreach($model as $key => $value){
-////                Assign properties to the models
-//                $new_model->{$key} = $value;
-//            }
-////            Push the models to array
-//            $models[] = $new_model;
-//        }
-////          return the models or return empty array
-//        return $models;
     }
 }

@@ -2,6 +2,8 @@
 
 @section(body)
 
-    dashboard
+    @foreach($exams as $exam)
+        @php(var_dump($exam['name']));
+    @endforeach
 
 @endsection()

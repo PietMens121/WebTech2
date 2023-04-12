@@ -119,7 +119,7 @@ abstract class Model
         $pdo = $this->conn->prepare($query);
         $pdo->execute();
         $columns = $pdo->fetch(PDO::FETCH_ASSOC);
-        if (!$columns){
+        if (!$columns) {
             return null;
         }
         foreach ($columns as $key => $value) {
@@ -145,11 +145,11 @@ abstract class Model
         $models = array();
 
 //        Go through all results
-        foreach($result as $model){
+        foreach ($result as $model) {
 //            Create new models
             $reflect = (new ReflectionClass($this))->getName();
             $new_model = new $reflect();
-            foreach($model as $key => $value){
+            foreach ($model as $key => $value) {
 //                Assign properties to the models
                 $new_model->{$key} = $value;
             }
@@ -169,5 +169,19 @@ abstract class Model
     {
         $reflection = new ReflectionClass($this);
         return $reflection->getShortName();
+    }
+
+    public function getFillable(): array
+    {
+        return $this->fillable;
+    }
+
+    public function getFormattedFillables(): array
+    {
+        $array = [];
+        foreach ($this->fillable as $key => $value) {
+            $array[] = $this->table . '.' . $value;
+        }
+        return $array;
     }
 }
