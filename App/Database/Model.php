@@ -2,6 +2,7 @@
 
 namespace App\Database;
 
+use App\Database\Builder\QueryBuilder;
 use App\Database\Relations\HasOne;
 use App\Database\Relations\Relation;
 use PDO;
@@ -113,12 +114,12 @@ abstract class Model
      * @param $query
      * @return Model
      */
-    private function fetchOne($query): Model|null
+    private function fetchOne(string $query): Model|null
     {
         $pdo = $this->conn->prepare($query);
         $pdo->execute();
         $columns = $pdo->fetch(PDO::FETCH_ASSOC);
-        if (!$columns){
+        if (!$columns) {
             return null;
         }
         foreach ($columns as $key => $value) {
@@ -133,7 +134,7 @@ abstract class Model
      * @param $query
      * @return array
      */
-    private function fetchAll($query): array
+    private function fetchAll(string $query): array
     {
         // prepare and fetch all results
         $pdo = $this->conn->prepare($query);
@@ -144,11 +145,11 @@ abstract class Model
         $models = array();
 
 //        Go through all results
-        foreach($result as $model){
+        foreach ($result as $model) {
 //            Create new models
             $reflect = (new ReflectionClass($this))->getName();
             $new_model = new $reflect();
-            foreach($model as $key => $value){
+            foreach ($model as $key => $value) {
 //                Assign properties to the models
                 $new_model->{$key} = $value;
             }
@@ -157,5 +158,30 @@ abstract class Model
         }
 //          return the models or return empty array
         return $models;
+    }
+
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    public function getShortName(): string
+    {
+        $reflection = new ReflectionClass($this);
+        return $reflection->getShortName();
+    }
+
+    public function getFillable(): array
+    {
+        return $this->fillable;
+    }
+
+    public function getFormattedFillables(): array
+    {
+        $array = [];
+        foreach ($this->fillable as $key => $value) {
+            $array[] = $this->table . '.' . $value;
+        }
+        return $array;
     }
 }
