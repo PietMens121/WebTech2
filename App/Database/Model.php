@@ -2,20 +2,29 @@
 
 namespace App\Database;
 
+use App\Database\Builder\QueryBuilder;
+use App\Database\Relations\HasOne;
+use App\Database\Relations\Relation;
 use PDO;
+use ReflectionClass;
 
 #[\AllowDynamicProperties]
 abstract class Model
 {
     protected string $table;
     protected array $fillable;
-    protected PDO $conn;
-    protected $primaryKey = 'id';
+    private PDO $conn;
+    public string $primary_key = 'id';
 
     public function __construct()
     {
         $sql = new MySQL();
         $this->conn = $sql->connect();
+    }
+
+    public function __isset(string $name): bool
+    {
+        return false;
     }
 
     /**
@@ -24,12 +33,11 @@ abstract class Model
      * @param $id
      * @return array|false
      */
-    public function find($id): bool|array
+    public function find($id): null|Model
     {
         $query = sprintf('SELECT * FROM %s WHERE id = %s', $this->table, $id);
-        $pdo = $this->conn->prepare($query);
-        $pdo->execute();
-        return $pdo->fetch(PDO::FETCH_ASSOC);
+
+        return $this->fetchOne($query);
     }
 
     /**
@@ -40,9 +48,7 @@ abstract class Model
     public function all(): bool|array
     {
         $query = sprintf('SELECT * FROM %s', $this->table);
-        $pdo = $this->conn->prepare($query);
-        $pdo->execute();
-        return $pdo->fetchAll(PDO::FETCH_ASSOC);
+        return $this->fetchAll($query);
     }
 
     /**
@@ -53,12 +59,21 @@ abstract class Model
      * @param $operator
      * @return array|false
      */
-    public function where($column, $value, $operator = '=')
+    public function where($column, $value, $operator = '='): false|array
     {
-        $query = sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
-        $pdo = $this->conn->prepare($query);
-        $pdo->execute();
-        return $pdo->fetchAll(PDO::FETCH_ASSOC);
+        $query = $this->whereQuery($column, $value, $operator);
+        return $this->fetchAll($query);
+    }
+
+    public function whereOne($column, $value, $operator = '=')
+    {
+        $query = $this->whereQuery($column, $value, $operator);
+        return $this->fetchOne($query);
+    }
+
+    public function whereQuery($column, $value, $operator): string
+    {
+        return sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
     }
 
     /**
@@ -82,7 +97,6 @@ abstract class Model
 
         $query = sprintf('INSERT INTO %s SET %s ', $this->table, $columns);
 
-        var_dump($query);
 
         try {
             $pdo = $this->conn->prepare($query)->execute($values);
@@ -95,13 +109,79 @@ abstract class Model
     }
 
     /**
-     * find model based on id returns ModelNotFound exception if no model is found
+     * fetch a single model
      *
-     * @param $id
-     * @return void
+     * @param $query
+     * @return Model
      */
-    public function findOrFail($id)
+    private function fetchOne(string $query): Model|null
     {
-//        TODO: create function
+        $pdo = $this->conn->prepare($query);
+        $pdo->execute();
+        $columns = $pdo->fetch(PDO::FETCH_ASSOC);
+        if (!$columns) {
+            return null;
+        }
+        foreach ($columns as $key => $value) {
+            $this->{$key} = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * fetch multiple models
+     *
+     * @param $query
+     * @return array
+     */
+    private function fetchAll(string $query): array
+    {
+        // prepare and fetch all results
+        $pdo = $this->conn->prepare($query);
+        $pdo->execute();
+        $result = $pdo->fetchAll(PDO::FETCH_ASSOC);
+
+//        In case no results found return this empty array
+        $models = array();
+
+//        Go through all results
+        foreach ($result as $model) {
+//            Create new models
+            $reflect = (new ReflectionClass($this))->getName();
+            $new_model = new $reflect();
+            foreach ($model as $key => $value) {
+//                Assign properties to the models
+                $new_model->{$key} = $value;
+            }
+//            Push the models to array
+            $models[] = $new_model;
+        }
+//          return the models or return empty array
+        return $models;
+    }
+
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    public function getShortName(): string
+    {
+        $reflection = new ReflectionClass($this);
+        return $reflection->getShortName();
+    }
+
+    public function getFillable(): array
+    {
+        return $this->fillable;
+    }
+
+    public function getFormattedFillables(): array
+    {
+        $array = [];
+        foreach ($this->fillable as $key => $value) {
+            $array[] = $this->table . '.' . $value;
+        }
+        return $array;
     }
 }
