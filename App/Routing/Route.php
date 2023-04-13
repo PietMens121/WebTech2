@@ -115,9 +115,9 @@ class Route
         return call_user_func_array($this->handler, $params);
     }
 
-    public function middleware(string $middleware): Route
+    public function middleware(string $name): Route
     {
-        $this->middleware[] = new ($this->diContainer->get("MiddlewareRegistry")[$middleware])();
+        $this->middleware[] = new ($this->diContainer->get("MiddlewareRegistry")[$name])();
         return $this;
     }
 }

@@ -7,6 +7,6 @@ class AuthMiddleware implements Middleware
 
     public function handle()
     {
-        // TODO: Implement handle() method.
+        // TODO: Implement auth functionality
     }
 }
