@@ -40,6 +40,7 @@ class Route
     }
 
 
+    private Container $diContainer;
     private string $name;
     private string $method;
     private Path $path;
@@ -47,7 +48,7 @@ class Route
     /**
      * @var Middleware[]
      */
-    private array $middleware;
+    private array $middleware = [];
 
     /**
      * Constructor
@@ -56,8 +57,9 @@ class Route
      * @param $handler
      * @param $name
      */
-    public function __construct($method, $path, $handler, $name = "")
+    public function __construct(Container $diContainer, $method, $path, $handler, $name = "")
     {
+        $this->diContainer = $diContainer;
         $this->method = $method;
         $this->path = $path;
         $this->handler = $handler;
@@ -113,9 +115,9 @@ class Route
         return call_user_func_array($this->handler, $params);
     }
 
-    public function middleware(Middleware $middleware): Route
+    public function middleware(string $middleware): Route
     {
-        $this->middleware[] = $middleware;
+        $this->middleware[] = new ($this->diContainer->get("MiddlewareRegistry")[$middleware])();
         return $this;
     }
 }

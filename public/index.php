@@ -21,10 +21,12 @@ require BASE_PATH . '/App/Helpers/helpers.php';
 (new DotEnv(BASE_PATH . '/.env'))->load();
 
 // Set up dependency container
-$container = new Container([
-    Router::class => new Router(),
-]);
-Container::setInstance($container);
+$container = Container::getInstance();
+$services = [
+    Router::class => new Router($container),
+    'MiddlewareRegistry' => require BASE_PATH . '/App/Middleware/middlewareRegistry.php',
+];
+$container->add($services);
 
 // Start session
 session_start();

@@ -2,20 +2,22 @@
 
 namespace App\Routing;
 
+use App\container\Container;
 use App\Http\Path;
-use App\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Router
 {
     private RouteContainer $routeContainer;
+    private Container $diContainer;
 
     /**
-     * Constructor
+     * Creates a router
      */
-    public function __construct()
+    public function __construct(Container $diContainer)
     {
+        $this->diContainer = $diContainer;
         $this->routeContainer = new RouteContainer();
     }
 
@@ -65,7 +67,7 @@ class Router
 
     private function addRoute(string $method, string $path, callable $callback): Route
     {
-        $route = new Route($method, new Path($path), $callback);
+        $route = new Route($this->diContainer, $method, new Path($path), $callback);
         $this->routeContainer->add($route);
         return $route;
     }
