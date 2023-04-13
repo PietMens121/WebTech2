@@ -194,7 +194,7 @@ abstract class Model
 
     public function attach(string $relation, int $id)
     {
-        
+
     }
 
     //$reflection = new \ReflectionObject($this);

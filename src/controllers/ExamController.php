@@ -28,7 +28,7 @@ class ExamController extends Controller
         $exam = $exam->find($id);
 
         if (!isset($exam)) {
-            Response::abort(404);
+            abort(404);
         }
 
         return Render::view('exams/exam.html', [
