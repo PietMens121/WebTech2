@@ -47,9 +47,9 @@ class Router
      * @param callable $callback
      * @return void
      */
-    public function get(string $path, callable $callback): void
+    public function get(string $path, callable $callback): Route
     {
-        $this->addRoute("GET", $path, $callback);
+        return $this->addRoute("GET", $path, $callback);
     }
 
     /**
@@ -58,14 +58,16 @@ class Router
      * @param callable $callback
      * @return void
      */
-    public function post(string $path, callable $callback): void
+    public function post(string $path, callable $callback): Route
     {
-        $this->addRoute("POST", $path, $callback);
+        return $this->addRoute("POST", $path, $callback);
     }
 
 
-    private function addRoute(string $method, string $path, callable $callback): void
+    private function addRoute(string $method, string $path, callable $callback): Route
     {
-        $this->routeContainer->add(new Route($method, new Path($path), $callback));
+        $route = new Route($method, new Path($path), $callback);
+        $this->routeContainer->add($route);
+        return $route;
     }
 }

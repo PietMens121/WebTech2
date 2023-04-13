@@ -13,13 +13,13 @@ class Route
      * @param callable $callback
      * @return void
      */
-    public static function get(string $path, callable $callback): void
+    public static function get(string $path, callable $callback): Route
     {
         /**
          * @var $router Router
          */
         $router = Container::getInstance()->get(Router::class);
-        $router->get($path, $callback);
+        return $router->get($path, $callback);
     }
 
     /**
@@ -28,13 +28,13 @@ class Route
      * @param callable $callback
      * @return void
      */
-    public static function post(string $path, callable $callback): void
+    public static function post(string $path, callable $callback): Route
     {
         /**
          * @var $router Router
          */
         $router = Container::getInstance()->get(Router::class);
-        $router->post($path, $callback);
+        return $router->post($path, $callback);
     }
 
 
@@ -95,5 +95,12 @@ class Route
     public function getHandler(): callable
     {
         return $this->handler;
+    }
+
+    public function middleware(string $middleware): Route
+    {
+        
+
+        return $this;
     }
 }
