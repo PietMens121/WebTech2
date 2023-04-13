@@ -8,6 +8,18 @@ use Psr\Http\Message\StreamInterface;
 
 class Response implements ResponseInterface
 {
+    public static function redirect(string $url): Response
+    {
+        $response = new Response(null, 302);
+        return $response->withHeader('Location', $url);
+    }
+
+    public static function view($filename, array $data = array(), int $statusCode = 200): ResponseInterface
+    {
+        return Render::view($filename, $data, $statusCode);
+    }
+
+
     private const PHRASES = [
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -70,12 +82,6 @@ class Response implements ResponseInterface
         510 => 'Not Extended',
         511 => 'Network Authentication Required',
     ];
-
-    public static function redirect(string $url): Response
-    {
-        $response = new Response(null, 302);
-        return $response->withHeader('Location', $url);
-    }
 
     private string $protocolVersion;
     private array $headers = [];
