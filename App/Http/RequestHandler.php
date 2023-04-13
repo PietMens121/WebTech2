@@ -10,15 +10,21 @@ use App\Routing\Router;
 
 class RequestHandler implements RequestHandlerInterface
 {
-    private Router $router;
+    private Container $container;
 
     public function __construct(Container $container)
     {
-        $this->router = $container->get(Router::class);
+        $this->container = $container;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->router->handleRequest($request);
+        $this->container->set(ServerRequest::class, $request);
+
+        /**
+         * @var $router Router
+         */
+        $router = $this->container->get(Router::class);
+        return $router->handleRequest($request);
     }
 }

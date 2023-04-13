@@ -7,13 +7,6 @@ use App\Http\Path;
 
 class Route
 {
-    private static Container $container;
-
-    static function setContainer(Container $container) : void
-    {
-        self::$container = $container;
-    }
-
     /**
      * Creates route with GET method.
      * @param string $path
@@ -25,7 +18,7 @@ class Route
         /**
          * @var $router Router
          */
-        $router = self::$container->get(Router::class);
+        $router = Container::getInstance()->get(Router::class);
         $router->get($path, $callback);
     }
 
@@ -40,7 +33,7 @@ class Route
         /**
          * @var $router Router
          */
-        $router = self::$container->get(Router::class);
+        $router = Container::getInstance()->get(Router::class);
         $router->post($path, $callback);
     }
 

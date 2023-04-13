@@ -6,6 +6,22 @@ use App\Exceptions\Container\NotFoundException;
 
 class Container
 {
+    private static Container $instance;
+
+    public static function getInstance(): Container
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new Container();
+        }
+
+        return self::$instance;
+    }
+
+    public static function setInstance(Container $instance): void
+    {
+        self::$instance = $instance;
+    }
+
     /**
      * @var array<string, mixed> An array of services registered in the container.
      */

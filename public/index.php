@@ -16,8 +16,11 @@ spl_autoload_register(function ($class) {
     include($filename);
 });
 
-//Autoload the psr classes
+// Autoload PSR classes
 require BASE_PATH . "/vendor/autoload.php";
+
+// Autoload other dependencies
+require_once BASE_PATH . "/App/Helpers/helpers.php";
 
 // Load .env
 (new DotEnv(BASE_PATH . '/.env'))->load();
@@ -28,13 +31,12 @@ $services = [
 ];
 
 $container = new Container($services);
-
-Route::setContainer($container);
+Container::setInstance($container);
 
 // Start session
 session_start();
 
-//Router
+// Load routes
 require_once BASE_PATH . '/routes/web.php';
 
 $requestHandler = new RequestHandler($container);
