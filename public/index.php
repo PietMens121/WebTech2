@@ -22,7 +22,7 @@ require BASE_PATH . '/App/Helpers/helpers.php';
 
 // Set up dependency container
 $container = new Container([
-    Router::class => new App\Routing\Router(),
+    Router::class => new Router(),
 ]);
 Container::setInstance($container);
 
