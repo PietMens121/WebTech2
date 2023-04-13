@@ -4,6 +4,8 @@ namespace App\Routing;
 
 use App\container\Container;
 use App\Http\Path;
+use App\Middleware\Middleware;
+use Psr\Http\Message\ResponseInterface;
 
 class Route
 {
@@ -42,7 +44,10 @@ class Route
     private string $method;
     private Path $path;
     private $handler;
-    private array $pathSegments;
+    /**
+     * @var Middleware[]
+     */
+    private array $middleware;
 
     /**
      * Constructor
@@ -97,10 +102,20 @@ class Route
         return $this->handler;
     }
 
-    public function middleware(string $middleware): Route
+    public function handle(array $params): ResponseInterface
     {
-        
+        // Call middleware
+        foreach ($this->middleware as $middleware) {
+            $middleware->handle();
+        }
 
+        // Call handler
+        return call_user_func_array($this->handler, $params);
+    }
+
+    public function middleware(Middleware $middleware): Route
+    {
+        $this->middleware[] = $middleware;
         return $this;
     }
 }

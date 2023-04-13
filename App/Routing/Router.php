@@ -36,9 +36,8 @@ class Router
         }
 
         // Call handler from the route and parse right parameters
-        $callback = $route->getHandler();
         $params = $path->extractParameters($route->getPath());
-        return call_user_func_array($callback, $params);
+        return $route->handle($params);
     }
 
     /**
