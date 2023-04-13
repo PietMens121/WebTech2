@@ -31,7 +31,7 @@ class Render
         $response = new Response(null, $statusCode);
 
         // Put the HTML in the response
-        $response->withHeader('Content-type', 'text/html');
+        $response = $response->withHeader('Content-type', 'text/html'); //TODO Add header in constructor
         $response->getBody()->write($code);
 
         // Return the response

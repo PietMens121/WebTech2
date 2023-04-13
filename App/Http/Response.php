@@ -71,15 +71,11 @@ class Response implements ResponseInterface
         511 => 'Network Authentication Required',
     ];
 
-    public static function abort(int $status)
+    public static function redirect(string $url): Response
     {
-        /**
-         * @var $response Response
-         */
-        $response = Render::view('errors/error.html', [], 404);
-        $response->send();
+        $response = new Response(null, 302);
+        return $response->withHeader('Location', $url);
     }
-
 
     private string $protocolVersion;
     private array $headers = [];
@@ -115,7 +111,7 @@ class Response implements ResponseInterface
         echo $this->body;
 
         // Terminate the script
-        exit();
+        exit;
     }
 
     public function getProtocolVersion(): string

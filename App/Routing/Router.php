@@ -32,7 +32,7 @@ class Router
         // Check if route exists, if not send 404
         $route = $this->routeContainer->find($method, $path);
         if (is_null($route)) {
-            Response::abort(404);
+            abort(404);
         }
 
         // Call handler from the route and parse right parameters
