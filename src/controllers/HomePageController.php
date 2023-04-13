@@ -10,8 +10,6 @@ class HomePageController extends Controller
 {
     public function index()
     {
-        var_dump(request()->getQueryParams());
-
         $user = new User();
         $user = $user->find(1);
 
