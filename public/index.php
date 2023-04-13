@@ -1,6 +1,6 @@
 <?php
 
-use App\container\Container;
+use App\container\DIContainer;
 use App\Http\RequestHandler;
 use App\Routing\Router;
 use App\Service\DotEnv;
@@ -21,12 +21,12 @@ require BASE_PATH . '/App/Helpers/helpers.php';
 (new DotEnv(BASE_PATH . '/.env'))->load();
 
 // Set up dependency container
-$container = Container::getInstance();
+$diContainer = DIContainer::getInstance();
 $services = [
-    Router::class => new Router($container),
+    Router::class => new Router($diContainer),
     'MiddlewareRegistry' => require BASE_PATH . '/App/Middleware/middlewareRegistry.php',
 ];
-$container->add($services);
+$diContainer->add($services);
 
 // Start session
 session_start();
@@ -35,9 +35,9 @@ session_start();
 require_once BASE_PATH . '/routes/web.php';
 
 // Handle the request
-$requestHandler = new RequestHandler($container);
+$requestHandler = new RequestHandler($diContainer);
 $request = ServerRequest::createFromGlobals();
-$container->set(ServerRequest::class, $request);   // Put request in container
+$diContainer->set(ServerRequest::class, $request);   // Put request in container
 $response = $requestHandler->handle($request);
 
 // Send the response

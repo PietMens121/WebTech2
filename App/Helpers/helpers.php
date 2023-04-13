@@ -1,12 +1,12 @@
 <?php
 
-use App\container\Container;
+use App\container\DIContainer;
 use App\Http\Response;
 use App\Http\ServerRequest;
 use App\Templating\Render;
 
 function request(): ServerRequest {
-    return Container::getInstance()->get(ServerRequest::class);
+    return DIContainer::getInstance()->get(ServerRequest::class);
 }
 
 function abort($status): void {

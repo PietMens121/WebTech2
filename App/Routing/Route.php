@@ -2,7 +2,7 @@
 
 namespace App\Routing;
 
-use App\container\Container;
+use App\container\DIContainer;
 use App\Http\Path;
 use App\Middleware\Middleware;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +20,7 @@ class Route
         /**
          * @var $router Router
          */
-        $router = Container::getInstance()->get(Router::class);
+        $router = DIContainer::getInstance()->get(Router::class);
         return $router->get($path, $callback);
     }
 
@@ -35,12 +35,12 @@ class Route
         /**
          * @var $router Router
          */
-        $router = Container::getInstance()->get(Router::class);
+        $router = DIContainer::getInstance()->get(Router::class);
         return $router->post($path, $callback);
     }
 
 
-    private Container $diContainer;
+    private DIContainer $diContainer;
     private string $name;
     private string $method;
     private Path $path;
@@ -57,7 +57,7 @@ class Route
      * @param $handler
      * @param $name
      */
-    public function __construct(Container $diContainer, $method, $path, $handler, $name = "")
+    public function __construct(DIContainer $diContainer, $method, $path, $handler, $name = "")
     {
         $this->diContainer = $diContainer;
         $this->method = $method;

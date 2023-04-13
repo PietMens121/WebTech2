@@ -2,7 +2,7 @@
 
 namespace App\Routing;
 
-use App\container\Container;
+use App\container\DIContainer;
 use App\Http\Path;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,12 +10,12 @@ use Psr\Http\Message\ServerRequestInterface;
 class Router
 {
     private RouteContainer $routeContainer;
-    private Container $diContainer;
+    private DIContainer $diContainer;
 
     /**
      * Creates a router
      */
-    public function __construct(Container $diContainer)
+    public function __construct(DIContainer $diContainer)
     {
         $this->diContainer = $diContainer;
         $this->routeContainer = new RouteContainer();

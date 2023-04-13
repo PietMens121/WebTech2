@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\container\Container;
+use App\container\DIContainer;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -12,7 +12,7 @@ class RequestHandler implements RequestHandlerInterface
 {
     private Router $router;
 
-    public function __construct(Container $container)
+    public function __construct(DIContainer $container)
     {
         $this->router = $container->get(Router::class);
     }

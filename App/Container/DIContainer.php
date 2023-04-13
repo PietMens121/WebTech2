@@ -4,20 +4,20 @@ namespace App\container;
 
 use App\Exceptions\Container\NotFoundException;
 
-class Container
+class DIContainer
 {
-    private static Container $instance;
+    private static DIContainer $instance;
 
-    public static function getInstance(): Container
+    public static function getInstance(): DIContainer
     {
         if (!isset(self::$instance)) {
-            self::$instance = new Container();
+            self::$instance = new DIContainer();
         }
 
         return self::$instance;
     }
 
-    public static function setInstance(Container $instance): void
+    public static function setInstance(DIContainer $instance): void
     {
         self::$instance = $instance;
     }
