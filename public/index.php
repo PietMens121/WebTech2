@@ -39,3 +39,18 @@ require_once BASE_PATH . '/routes/web.php';
 
 $requestHandler = new RequestHandler($container);
 $response = $requestHandler->handle(ServerRequest::createFromGlobals());
+
+// Send response TODO: put in separate class
+$status = $response->getStatusCode();
+$headers = $response->getHeaders();
+$body = $response->getBody();
+
+http_response_code($status);
+
+foreach ($headers as $header => $value) {
+    header(sprintf('%s: %s', $header, implode(', ', $value)));
+}
+
+echo $body;
+
+exit();

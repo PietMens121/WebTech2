@@ -2,27 +2,54 @@
 
 namespace App\Templating;
 
+use App\Http\Response;
+use Psr\Http\Message\ResponseInterface;
+
 class Render
 {
-    private const VIEW_FOLDER_PATH = 'resources/views';
-    private static string $cache_path = '';
+    private const VIEW_FOLDER_PATH = BASE_PATH . '/resources/views';
+    private const CACHE_PATH = BASE_PATH . "/temp";
     private static array $sections = [];
-    private static bool $clearing_cache = true;
 
     /**
      * The function to initialize the view
      *
      * @param $filename
-     * @param $data
-     * @return void
+     * @param array $data
+     * @return ResponseInterface
      */
-    public static function view($filename, $data = array()): void
+    public static function view($filename, array $data = array(), int $statusCode = 200): ResponseInterface
     {
-        self::$cache_path = $_SERVER['DOCUMENT_ROOT'] . '/../temp';
-        self::clear_cache();
+        // Process the view
         $file = self::prepare($filename);
-        extract($data, EXTR_SKIP);
+        $code = self::process($file, $data);
+
+        // Delete temp file
+        unlink($file);
+
+        // Create empty response
+        $response = new Response(null, $statusCode);
+
+        // Put the HTML in the response
+        $response->withHeader('Content-type', 'text/html');
+        $response->getBody()->write($code);
+
+        // Return the response
+        return $response;
+    }
+
+    /**
+     * Processes a php file and puts the result in a string.
+     * @param string $file The php file to process.
+     * @param array $data Data for the templates.
+     * @return string The processed html.
+     */
+    private static function process(string $file, array $data): string
+    {
+        ob_start();
+        extract($data);
         require $file;
+        return ob_get_clean();
     }
 
     /**
@@ -31,20 +58,11 @@ class Render
      */
     private static function prepare($filename): bool|string
     {
-        $temp = tempnam(self::$cache_path, 'TMP_');
+        $temp = tempnam(self::CACHE_PATH, 'TMP');
         $code = self::includeFiles($filename);
         $code = self::compileView($code);
         file_put_contents($temp, '<?php class_exists(\'' . __CLASS__ . '\') or exit; ?>' . PHP_EOL . $code);
         return $temp;
-    }
-
-    private static function clear_cache(): void
-    {
-        if (self::$clearing_cache) {
-            foreach (glob(self::$cache_path . '/TMP_*') as $file) {
-                unlink($file);
-            }
-        }
     }
 
     /**
@@ -52,10 +70,9 @@ class Render
      *
      * @return string|bool
      */
-
     private static function includeFiles($filename): string|bool
     {
-        $code = file_get_contents(dirname(__DIR__, 2) . '/' . self::VIEW_FOLDER_PATH . '/' . $filename);
+        $code = file_get_contents(self::VIEW_FOLDER_PATH . "/" . $filename);
         preg_match_all('~@(extends|@include)\(([^)]*)\)~is', $code, $matches, PREG_SET_ORDER);
         foreach ($matches as $value) {
             $code = str_replace($value[0], self::includeFiles($value[2]), $code);
@@ -63,13 +80,6 @@ class Render
         $code = preg_replace('~@(extends|@include)#(#([^)]*)#)#~is', '', $code);
         return $code;
     }
-
-//preg_match_all('/{% ?(extends|include) ?\'?(.*?)\'? ?%}/i', $code, $matches, PREG_SET_ORDER);
-//foreach ($matches as $value) {
-//$code = str_replace($value[0], self::includeFiles($value[2]), $code);
-//}
-//$code = preg_replace('/{% ?(extends|include) ?\'?(.*?)\'? ?%}/i', '', $code);
-//return $code;
 
     /**
      * changes all templating function names to correct code
@@ -89,8 +99,7 @@ class Render
         $code = self::compileElse($code);
         $code = self::compileForEach($code);
         $code = self::compileEndForEach($code);
-        $code = self::compilePHP($code);
-        return $code;
+        return self::compilePHP($code);
     }
 
     private static function compileEcho($code): array|string|null
@@ -130,7 +139,7 @@ class Render
 
     private static function compilePHP($code): array|string|null
     {
-        return preg_replace('~\@php\((.*)(?=\)\;)..~ism', '<?php $1 ?>', $code);
+        return preg_replace('~@php\((.*)(?=\);)..~ism', '<?php $1 ?>', $code);
     }
 
 
@@ -162,7 +171,7 @@ class Render
 
     private static function compileAsset($code): array|string|null
     {
-        $replacement = 'http://'. $_SERVER['HTTP_HOST'] . '/resources/';
-        return preg_replace('~\{\{\s*asset\(([^)]*)\)\s*\}\}~ism', $replacement . "$1", $code);
+        $replacement = 'http://' . $_SERVER['HTTP_HOST'] . '/resources/';
+        return preg_replace('~\{\{\s*asset\(([^)]*)\)\s*}}~ism', $replacement . "$1", $code);
     }
 }

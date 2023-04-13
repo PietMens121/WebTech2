@@ -3,13 +3,7 @@
 namespace src\controllers;
 
 
-use App\Database\Builder;
-use App\Http\Response;
-use App\Service\dd;
 use App\Templating\Render;
-use Couchbase\View;
-use src\models\Coin;
-use src\models\Exam;
 use src\models\User;
 
 class HomePageController extends Controller
@@ -21,7 +15,7 @@ class HomePageController extends Controller
 
         $exams = $user->Exams();
 
-        Render::view('home.html', [
+        return Render::view('home.html', [
             'user' => $user,
             'exams' => $exams
         ]);

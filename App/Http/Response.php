@@ -71,97 +71,137 @@ class Response implements ResponseInterface
         511 => 'Network Authentication Required',
     ];
 
-    private $reason;
-    private $statusCode;
+    public static function abort(int $status)
+    {
+        /**
+         * @var $response Response
+         */
+        $response = Render::view('errors/error.html', [], 404);
+        $response->send();
+    }
+
+
+    private string $protocolVersion;
+    private array $headers = [];
+    private StreamInterface $body;
+    private int $statusCode;
+    private string $reasonPhrase = '';
 
     public function __construct(
-        int $status = 200,
-        string $reason = null,
+        StreamInterface $body = null,
+        int $statusCode = 200,
+        array $headers = [],
+        string $protocolVersion = '1.1',
+        string $reasonPhrase = ''
     ) {
-        $this->checkStatusCodeRange($status);
-        $this->statusCode = $status;
-        $this->showErrorPage();
+        $this->body = $body ?? new Stream(tmpfile()); // Create stream with temp file if no stream was given TODO: create stream outside of class
+        $this->statusCode = $statusCode;
+        $this->headers = $headers;
+        $this->protocolVersion = $protocolVersion;
+        $this->reasonPhrase = $reasonPhrase;
     }
 
-    public function showErrorPage()
+    public function send(): void
     {
-        Render::view('errors/error.html');
-    }
+        // Set the HTTP response code
+        http_response_code($this->statusCode);
 
-    private function checkStatusCodeRange(int $statusCode): void
-    {
-        if ($statusCode < 100 || $statusCode >= 600) {
-            throw new \InvalidArgumentException("Status code needs to be between 100 and 600");
+        // Set the HTTP headers
+        foreach ($this->headers as $header => $value) {
+            header(sprintf('%s: %s', $header, implode(', ', $value)));
         }
+
+        // Send the response body
+        echo $this->body;
+
+        // Terminate the script
+        exit();
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
-        // TODO: Implement getProtocolVersion() method.
+        return $this->protocolVersion;
     }
 
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): Response
     {
-        // TODO: Implement withProtocolVersion() method.
+        $new = clone $this;
+        $new->protocolVersion = $version;
+        return $new;
     }
 
-    public function getHeaders()
+    public function getHeaders(): array
     {
-        // TODO: Implement getHeaders() method.
+        return $this->headers;
     }
 
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
-        // TODO: Implement hasHeader() method.
+        return isset($this->headers[strtolower($name)]);
     }
 
     public function getHeader($name)
     {
-        // TODO: Implement getHeader() method.
+        $name = strtolower($name);
+        if (!isset($this->headers[$name])) {
+            return [];
+        }
+        return $this->headers[$name];
     }
 
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
-        // TODO: Implement getHeaderLine() method.
+        return implode(',', $this->getHeader($name));
     }
 
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): Response
     {
-        // TODO: Implement withHeader() method.
+        $new = clone $this;
+        $new->headers[strtolower($name)] = [$value];
+        return $new;
     }
 
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): Response
     {
-        // TODO: Implement withAddedHeader() method.
+        $new = clone $this;
+        $new->headers[strtolower($name)][] = $value;
+        return $new;
     }
 
-    public function withoutHeader($name)
+    public function withoutHeader($name): Response
     {
-        // TODO: Implement withoutHeader() method.
+        $new = clone $this;
+        unset($new->headers[strtolower($name)]);
+        return $new;
     }
 
-    public function getBody()
+    public function getBody(): StreamInterface
     {
-        // TODO: Implement getBody() method.
+        return $this->body;
     }
 
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): Response
     {
-        // TODO: Implement withBody() method.
+        $new = clone $this;
+        $new->body = $body;
+        return $new;
     }
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
-        // TODO: Implement getStatusCode() method.
+        return $this->statusCode;
     }
 
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): Response
     {
-        // TODO: Implement withStatus() method.
+        $new = clone $this;
+        $new->statusCode = $code;
+        $new->reasonPhrase = $reasonPhrase;
+        return $new;
     }
 
-    public function getReasonPhrase()
+    public function getReasonPhrase(): string
     {
-        // TODO: Implement getReasonPhrase() method.
+        return $this->reasonPhrase;
     }
 }

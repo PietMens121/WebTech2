@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Response;
 use App\Routing\Route;
-use App\Templating\Render;
 use src\controllers\HomePageController;
 
 // Setup routes here
