@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 class DotEnv
 {
     protected string $path;
@@ -14,12 +17,12 @@ class DotEnv
     public function __construct(string $path)
     {
         if (!file_exists($path)) {
-            throw new \InvalidArgumentException(sprintf('%s does not exist', $path));
+            throw new InvalidArgumentException(sprintf('%s does not exist', $path));
         }
 
 //        check if .env file is readable
         if (!is_readable($path)) {
-            throw new \RuntimeException(sprintf('%s file is not readable', $path));
+            throw new RuntimeException(sprintf('%s file is not readable', $path));
         }
 
         $this->path = $path;

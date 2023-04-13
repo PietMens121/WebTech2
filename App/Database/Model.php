@@ -2,13 +2,17 @@
 
 namespace App\Database;
 
+use AllowDynamicProperties;
 use App\Database\Builder\QueryBuilder;
 use App\Database\Relations\HasOne;
 use App\Database\Relations\Relation;
 use PDO;
+use PDOException;
 use ReflectionClass;
+use ReflectionObject;
+use ReflectionProperty;
 
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 abstract class Model
 {
     protected string $table;
@@ -83,12 +87,12 @@ abstract class Model
      */
     public function save(): bool
     {
-        $reflection = new \ReflectionObject($this);
+        $reflection = new ReflectionObject($this);
 
         $columns = [];
         $values = [];
 
-        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+        foreach ($reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
             $columns[] = '`' . $property->getName() . '` = ?';
             $values[] = $this->{$property->getName()};
         }
@@ -105,7 +109,7 @@ abstract class Model
 
         try {
             $pdo = $this->conn->prepare($query)->execute($values);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             print('something went wrong inserting/updating the user ' . $e);
             $pdo = false;
         }

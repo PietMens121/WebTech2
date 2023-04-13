@@ -2,7 +2,9 @@
 
 namespace App\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 class Stream implements StreamInterface
 {
@@ -16,7 +18,7 @@ class Stream implements StreamInterface
         } elseif (is_string($stream)) {
             $this->stream = fopen($stream, 'r+');
         } else {
-            throw new \InvalidArgumentException('Invalid stream');
+            throw new InvalidArgumentException('Invalid stream');
         }
     }
 
@@ -29,7 +31,7 @@ class Stream implements StreamInterface
         try {
             $this->rewind();
             return $this->getContents();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return '';
         }
     }
@@ -66,12 +68,12 @@ class Stream implements StreamInterface
     public function tell()
     {
         if (!isset($this->stream)) {
-            throw new \RuntimeException('Stream is detached');
+            throw new RuntimeException('Stream is detached');
         }
 
         $result = ftell($this->stream);
         if ($result === false) {
-            throw new \RuntimeException('Unable to determine stream position');
+            throw new RuntimeException('Unable to determine stream position');
         }
 
         return $result;
@@ -99,15 +101,15 @@ class Stream implements StreamInterface
     public function seek($offset, $whence = SEEK_SET)
     {
         if (!isset($this->stream)) {
-            throw new \RuntimeException('Stream is detached');
+            throw new RuntimeException('Stream is detached');
         }
 
         if (!$this->isSeekable()) {
-            throw new \RuntimeException('Stream is not seekable');
+            throw new RuntimeException('Stream is not seekable');
         }
 
         if (fseek($this->stream, $offset, $whence) === -1) {
-            throw new \RuntimeException('Unable to seek to stream position ' . $offset . ' with whence ' . var_export($whence, true));
+            throw new RuntimeException('Unable to seek to stream position ' . $offset . ' with whence ' . var_export($whence, true));
         }
     }
 
@@ -131,16 +133,16 @@ class Stream implements StreamInterface
     public function write($string)
     {
         if (!isset($this->stream)) {
-            throw new \RuntimeException('Stream is detached');
+            throw new RuntimeException('Stream is detached');
         }
 
         if (!$this->isWritable()) {
-            throw new \RuntimeException('Stream is not writable');
+            throw new RuntimeException('Stream is not writable');
         }
 
         $result = fwrite($this->stream, $string);
         if ($result === false) {
-            throw new \RuntimeException('Unable to write to stream');
+            throw new RuntimeException('Unable to write to stream');
         }
 
         return $result;
@@ -160,16 +162,16 @@ class Stream implements StreamInterface
     public function read($length)
     {
         if (!isset($this->stream)) {
-            throw new \RuntimeException('Stream is detached');
+            throw new RuntimeException('Stream is detached');
         }
 
         if (!$this->isReadable()) {
-            throw new \RuntimeException('Stream is not readable');
+            throw new RuntimeException('Stream is not readable');
         }
 
         $result = fread($this->stream, $length);
         if ($result === false) {
-            throw new \RuntimeException('Unable to read from stream');
+            throw new RuntimeException('Unable to read from stream');
         }
 
         return $result;
@@ -178,12 +180,12 @@ class Stream implements StreamInterface
     public function getContents()
     {
         if (!isset($this->stream)) {
-            throw new \RuntimeException('Stream is detached');
+            throw new RuntimeException('Stream is detached');
         }
 
         $result = stream_get_contents($this->stream);
         if ($result === false) {
-            throw new \RuntimeException('Unable to read stream contents');
+            throw new RuntimeException('Unable to read stream contents');
         }
 
         return $result;

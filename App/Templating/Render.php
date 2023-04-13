@@ -14,11 +14,12 @@ class Render
     /**
      * The function to initialize the view
      *
-     * @param $filename
-     * @param array $data
-     * @return ResponseInterface
+     * @param string $filename Name of the view file.
+     * @param array $data Data for the templates.
+     * @param int $statusCode The status code of the response.
+     * @return ResponseInterface The rendered response.
      */
-    public static function view($filename, array $data = array(), int $statusCode = 200): ResponseInterface
+    public static function view(string $filename, array $data = array(), int $statusCode = 200): ResponseInterface
     {
         // Process the view
         $file = self::prepare($filename);

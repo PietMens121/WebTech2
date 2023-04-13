@@ -8,12 +8,24 @@ use Psr\Http\Message\StreamInterface;
 
 class Response implements ResponseInterface
 {
+    /**
+     * Creates a redirect response.
+     * @param string $url The URL to redirect the client to.
+     * @return Response The redirect response.
+     */
     public static function redirect(string $url): Response
     {
         $response = new Response(null, 302);
         return $response->withHeader('Location', $url);
     }
 
+    /**
+     * Other way to write {@link Render::view()}.
+     * @param $filename
+     * @param array $data
+     * @param int $statusCode
+     * @return ResponseInterface
+     */
     public static function view($filename, array $data = array(), int $statusCode = 200): ResponseInterface
     {
         return Render::view($filename, $data, $statusCode);
@@ -87,14 +99,22 @@ class Response implements ResponseInterface
     private array $headers = [];
     private StreamInterface $body;
     private int $statusCode;
-    private string $reasonPhrase = '';
+    private ?string $reasonPhrase = null;
 
+    /**
+     * Creates a response.
+     * @param StreamInterface|null $body The response body.
+     * @param int $statusCode The status code of the response.
+     * @param array $headers The headers of the response.
+     * @param string $protocolVersion The protocol version of the response.
+     * @param string $reasonPhrase The reason phrase of the response.
+     */
     public function __construct(
         StreamInterface $body = null,
         int $statusCode = 200,
         array $headers = [],
         string $protocolVersion = '1.1',
-        string $reasonPhrase = ''
+        ?string $reasonPhrase = null
     ) {
         $this->body = $body ?? new Stream(tmpfile()); // Create stream with temp file if no stream was given TODO: create stream outside of class
         $this->statusCode = $statusCode;
@@ -103,8 +123,19 @@ class Response implements ResponseInterface
         $this->reasonPhrase = $reasonPhrase;
     }
 
+    /**
+     * Sends the response and terminates the script.
+     * @return void
+     */
     public function send(): void
     {
+        // Set reason phrase if its null
+        $this->reasonPhrase = $this->reasonPhrase ?? self::PHRASES[$this->statusCode];
+
+        // Set status header
+        $statusLine = sprintf('HTTP/%s %d %s', $this->protocolVersion, $this->statusCode, $this->reasonPhrase);
+        header($statusLine);
+
         // Set the HTTP response code
         http_response_code($this->statusCode);
 

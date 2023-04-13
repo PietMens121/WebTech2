@@ -35,7 +35,7 @@ require_once BASE_PATH . '/routes/web.php';
 // Handle the request
 $requestHandler = new RequestHandler($container);
 $request = ServerRequest::createFromGlobals();
-$container->set(ServerRequest::class, $request);
+$container->set(ServerRequest::class, $request);   // Put request in container
 $response = $requestHandler->handle($request);
 
 // Send the response
