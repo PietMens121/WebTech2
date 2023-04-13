@@ -95,8 +95,13 @@ abstract class Model
 
         $columns = implode(',', $columns);
 
-        $query = sprintf('INSERT INTO %s SET %s ', $this->table, $columns);
+        return $this->pushDb($this->table, $columns, $values);
+    }
 
+    public function pushDb(string $table, string $columns, array $values)
+    {
+
+        $query = sprintf('INSERT INTO %s SET %s ', $this->table, $columns);
 
         try {
             $pdo = $this->conn->prepare($query)->execute($values);
@@ -184,4 +189,25 @@ abstract class Model
         }
         return $array;
     }
+
+//    $user->attach(Exam::class)
+
+    public function attach(string $relation, int $id)
+    {
+        
+    }
+
+    //$reflection = new \ReflectionObject($this);
+    //
+    //        $columns = [];
+    //        $values = [];
+    //
+    //        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+    //            $columns[] = '`' . $property->getName() . '` = ?';
+    //            $values[] = $this->{$property->getName()};
+    //        }
+    //
+    //        $columns = implode(',', $columns);
+    //
+    //        return $this->pushDb($this->table, $columns, $values);
 }

@@ -1,0 +1,29 @@
+@extends(layouts/layout.html)
+
+@section(body)
+    <div class="pt-12">
+
+        <div class="mx-auto w-10/12">
+
+            <div class="grid gap-y-12 grid-cols-3 place-content-stretch">
+
+<!--                Card-->
+                @foreach($exams as $exam)
+                <div class="max-w-sm p-6 border rounded-lg shadow bg-gray-800 border-gray-700">
+                    <a href="/exams/{{ $exam->id }}">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-white">{{ $exam->name }}</h5>
+                    </a>
+                    <p class="mb-3 font-normal text-gray-400">Weging: {{ $exam->weight}}</p>
+                    <a href="/exams/{{ $exam->id }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">
+                        Read more
+                        <svg aria-hidden="true" class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </div>
+                @endforeach
+<!--                End card-->
+            </div>
+
+        </div>
+
+    </div>
+@endsection()
