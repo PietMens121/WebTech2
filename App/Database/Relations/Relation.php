@@ -28,6 +28,8 @@ class Relation
         if ($pivot_table === '') {
             $order_array = [];
 
+
+
             array_push($order_array, self::$model->getShortName(), self::$relation_model->getShortName());
             sort($order_array);
 
@@ -93,12 +95,19 @@ class Relation
         return $results;
     }
 
-    private static function prepareRelationJoin($pivot_table): array
+    private static function prepareRelationJoin($pivot_table, $with_pivot = false): array
     {
         $pivot_table = self::formatPivotTable($pivot_table);
 
         $query = new QueryBuilder();
-        $query->select(implode(', ', self::$relation_model->getFormattedFillables()));
+
+        if(!$with_pivot)
+        {
+            $query->select(implode(', ', self::$relation_model->getFormattedFillables()));
+        } else {
+            $query->select(implode(', ', self::$relation_model->getFormattedFillables()) . ', ' . $pivot_table . '.*');
+        }
+
         $query->from(self::$model->getTable());
 
         $query = self::prepareFirstJoin($query, $pivot_table);
@@ -148,10 +157,33 @@ class Relation
         $columns = self::formatForeignKey(self::$model) . ' = ? , ' . self::formatForeignKey(self::$relation_model) . ' = ?';
         $values = [];
 
-        var_dump($pivot);
-
         array_push($values, self::$model->{self::$model->primary_key}, $id);
 
         return self::$model->pushDb($pivot, $columns, $values);
+    }
+
+    public static function getPivot(string $relation, Model $model, $pivot = ''): array
+    {
+        self::$model = $model;
+        self::$relation_model = new ($relation)();
+
+        $pivot = self::formatPivotTable($pivot);
+
+        $query = new QueryBuilder();
+
+        $query->from($pivot)
+            ->where(self::formatForeignKey(self::$model) . ' = ' . self::$model->{self::$model->primary_key});
+
+        echo $query;
+
+        return $query->get();
+    }
+
+    public static function getWithPivot(string $relation, Model $model, $pivot = ''): array
+    {
+        self::$model = $model;
+        self::$relation_model = new ($relation)();
+
+        return self::prepareRelationJoin($pivot, true);
     }
 }

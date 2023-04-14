@@ -9,88 +9,31 @@
                 Cijfers
             </p>
             <div class="w-full h-4/6 m-4">
-                <div class=" w-11/12 h-full m-4s flex flex-col">
-                    <div class="w-full h-1/5 border">
+                <div class=" w-11/12 h-full m-4s flex flex-col overflow-auto">
+
+                    @foreach($grades as $grade);
+                    <div class="w-full h-1/5 border" style="height: 46px;">
                         <div class="flex h-full">
                             <div class="w-1/6 h-full p-1 px-2">
                                 <div class="font-bold text-gray-700 rounded-full bg-slate-400 flex items-center justify-center" style="height: 100%; width: 100%;">
-                                    9.1
+                                    @if($grade['grade'] === null);
+                                    0
+                                    @else;
+                                        {{ $grade['grade']}}
+                                    @endif;
                                 </div>
                             </div>
 
                             <div class=" flex">
                                 <div class="self-center overflow-hidden">
-                                    Object georienteerd programmeren
+                                    {{ $grade['name'] }}
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="w-full h-1/5 border">
-                        <div class="flex h-full">
-                            <div class="w-1/6 h-full p-1 px-2">
-                                <div class="font-bold text-gray-700 rounded-full bg-slate-400 flex items-center justify-center" style="height: 100%; width: 100%;">
-                                    9.1
-                                </div>
-                            </div>
-
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="w-full h-1/5 border">
-                        <div class="flex h-full">
-                            <div class="w-1/6 h-full p-1 px-2">
-                                <div class="font-bold text-gray-700 rounded-full bg-slate-400 flex items-center justify-center" style="height: 100%; width: 100%;">
-                                    9.1
-                                </div>
-                            </div>
-
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="w-full h-1/5 border">
-                        <div class="flex h-full">
-                            <div class="w-1/6 h-full p-1 px-2">
-                                <div class="font-bold text-gray-700 rounded-full bg-slate-400 flex items-center justify-center" style="height: 100%; width: 100%;">
-                                    9.1
-                                </div>
-                            </div>
-
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="w-full h-1/5 border">
-                        <div class="flex h-full">
-                            <div class="w-1/6 h-full p-1 px-2">
-                                <div class="font-bold text-gray-700 rounded-full bg-slate-400 flex items-center justify-center" style="height: 100%; width: 100%;">
-                                    9.1
-                                </div>
-                            </div>
-
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    @endforeach
 
                 </div>
             </div>
@@ -107,15 +50,16 @@
                 Tentamens
             </p>
             <div class="w-full h-4/6 m-4">
-                <div class=" w-11/12 h-full m-4s flex flex-col">
+                <div class=" w-11/12 h-full m-4s flex flex-col overflow-auto">
+                    @foreach($exams as $exam);
 <!--                        Tentamen-->
-                    <div class="w-full h-1/5 border flex px-1 justify-center">
+                    <div class="w-full h-1/5 border flex px-1 justify-center" style="min-height: 50px;">
 
 
                         <div class="flex h-full w-9/12 ">
                             <div class=" flex">
                                 <div class="self-center overflow-hidden px-1">
-                                    Object georienteerd programmeren
+                                    {{$exam->name}}
                                 </div>
                             </div>
                         </div>
@@ -127,7 +71,7 @@
                                         Weging:
                                     </p>
                                     <p class="">
-                                        5
+                                        {{ $exam->weight }}
                                     </p>
 
                                 </div>
@@ -135,120 +79,8 @@
                         </div>
 
                     </div>
+                    @endforeach
 <!--                End tentamen-->
-                    <!--                        Tentamen-->
-                    <div class="w-full h-1/5 border flex px-1 justify-center">
-
-
-                        <div class="flex h-full w-9/12 ">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden px-1">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex h-full w-3/12">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden font-light flex gap-1">
-                                    <p>
-                                        Weging:
-                                    </p>
-                                    <p class="">
-                                        5
-                                    </p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!--                End tentamen-->
-                    <!--                        Tentamen-->
-                    <div class="w-full h-1/5 border flex px-1 justify-center">
-
-
-                        <div class="flex h-full w-9/12 ">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden px-1">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex h-full w-3/12">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden font-light flex gap-1">
-                                    <p>
-                                        Weging:
-                                    </p>
-                                    <p class="">
-                                        5
-                                    </p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!--                End tentamen-->
-                    <!--                        Tentamen-->
-                    <div class="w-full h-1/5 border flex px-1 justify-center">
-
-
-                        <div class="flex h-full w-9/12 ">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden px-1">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex h-full w-3/12">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden font-light flex gap-1">
-                                    <p>
-                                        Weging:
-                                    </p>
-                                    <p class="">
-                                        5
-                                    </p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!--                End tentamen-->
-                    <!--                        Tentamen-->
-                    <div class="w-full h-1/5 border flex px-1 justify-center">
-
-
-                        <div class="flex h-full w-9/12 ">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden px-1">
-                                    Object georienteerd programmeren
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex h-full w-3/12">
-                            <div class=" flex">
-                                <div class="self-center overflow-hidden font-light flex gap-1">
-                                    <p>
-                                        Weging:
-                                    </p>
-                                    <p class="">
-                                        5
-                                    </p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!--                End tentamen-->
-
                 </div>
             </div>
             <div class="px-4 w-full">
