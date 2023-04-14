@@ -2,6 +2,10 @@
 
 namespace App\Database;
 
+use App\Exceptions\Database\Auth\AlreadyLoggedInException;
+use App\Exceptions\Database\Auth\LoginException;
+use App\Exceptions\Database\Auth\UserNotFoundException;
+use App\Exceptions\Database\Auth\WrongPasswordException;
 use src\models\User;
 
 class Auth
@@ -23,11 +27,17 @@ class Auth
         return null;
     }
 
-    public static function login($username, $password): bool
+    /**
+     * @param $username
+     * @param $password
+     * @return void
+     * @throws LoginException
+     */
+    public static function login($username, $password): void
     {
         // Check if already logged in
         if (!is_null(self::user())) {
-            return false; // TODO: Throw exception
+            throw new AlreadyLoggedInException();
         }
 
         // Get user from database
@@ -35,17 +45,16 @@ class Auth
 
         // Check if user exists
         if (is_null($user)) {
-            return false; // TODO: Throw exception
+            throw new UserNotFoundException();
         }
 
         // Check if passwords match TODO: Add password hashing.
         if ($user->password != $password) {
-            return false;
+            throw new WrongPasswordException();
         }
 
         // Log user in
         self::$user = $user;
         $_SESSION['userID'] = $user->id;
-        return true;
     }
 }
