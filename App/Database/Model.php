@@ -194,11 +194,11 @@ abstract class Model
         return $array;
     }
 
-//    $user->attach(Exam::class)
+//    $user->attach(Exam::class, $id)
 
     public function attach(string $relation, int $id)
     {
-
+        Relation::attach($relation, $id, $this);
     }
 
     //$reflection = new \ReflectionObject($this);

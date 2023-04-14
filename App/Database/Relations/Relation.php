@@ -98,7 +98,7 @@ class Relation
         $pivot_table = self::formatPivotTable($pivot_table);
 
         $query = new QueryBuilder();
-        $query->select(implode(', ',self::$relation_model->getFormattedFillables()));
+        $query->select(implode(', ', self::$relation_model->getFormattedFillables()));
         $query->from(self::$model->getTable());
 
         $query = self::prepareFirstJoin($query, $pivot_table);
@@ -134,7 +134,21 @@ class Relation
     {
         $constraint = $pivot . '.' . self::$relation_model->getShortName() . '_id';
 
-        return $query->join(self::$relation_model->getTable(), $constraint, '=' ,self::$relation_model->getTable() . '.id');
+        return $query->join(
+            self::$relation_model->getTable(),
+            $constraint,
+            '=',
+            self::$relation_model->getTable() . '.id'
+        );
+    }
+
+    public static function attach(string $relation, int $id, Model $model)
+    {
+        self::$model = $model;
+        self::$relation_model = new ($relation)();
+
+        $query = new QueryBuilder();
+
     }
 
 }
