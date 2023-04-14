@@ -2,7 +2,7 @@
 
 @section(body)
 
-<div class="flex justify-center mt-44">
+<div class="flex justify-center gap-4 mt-44">
 
     <div class="max-w-sm py-6 px-12 border rounded-lg shadow bg-gray-800 border-gray-700">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-white">{{ $exam->name }}</h5>
@@ -13,9 +13,25 @@
                 Inschrijven
                 <svg aria-hidden="true" class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
             </button>
-        <form>
+        </form>
     </div>
 
-</div>
+    @if(true);
+        <div class="w-2/12 bg-gray-800 border-gray-700 rounded-lg overflow-auto" style="max-height: 226px;">
 
+            @foreach($exam->users() as $user);
+                    <div class="w-full h-3/12 border">
+                        <div class="flex gap-2 h-full">
+                            <div class="w-2/6 h-full flex p-1 px-2 text-white">
+                                <p>{{ $user['username']}}</p>
+                                <p class="ml-1">{{ $user['password']}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+            @endforeach
+        </div>
+    @endif()
+</div>
 @endsection()

@@ -108,10 +108,6 @@ class Relation
 
         $results = $query->get();
 
-        $results[] = [
-            'pivot' => $pivot_table
-        ];
-
         return $results;
     }
 

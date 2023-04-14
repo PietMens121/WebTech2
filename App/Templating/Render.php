@@ -130,7 +130,7 @@ class Render
 
     private static function compileForEach($code): array|string|null
     {
-        return preg_replace('~@foreach\(([^)]*)\)~', '<?php foreach($1): ?>', $code);
+        return preg_replace('~@foreach\(([^;]*)\);~', '<?php foreach($1): ?>', $code);
     }
 
     private static function compileEndForEach($code): array|string|null
