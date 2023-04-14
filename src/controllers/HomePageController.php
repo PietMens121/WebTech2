@@ -4,6 +4,7 @@ namespace src\controllers;
 
 
 use App\Templating\Render;
+use src\models\Exam;
 use src\models\User;
 
 class HomePageController extends Controller
@@ -13,11 +14,15 @@ class HomePageController extends Controller
         $user = new User();
         $user = $user->find(1);
 
-        $exams = $user->Exams();
+        $exams = new Exam;
+        $exams = $exams->all();
+
+        $grades = $user->withPivot(Exam::class);
 
         return Render::view('home.html', [
             'user' => $user,
-            'exams' => $exams
+            'exams' => $exams,
+            'grades' => $grades
         ]);
     }
 }
