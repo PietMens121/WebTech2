@@ -24,4 +24,9 @@ class Exam extends Model
         return Relation::BelongsToMany($this, User::class);
     }
 
+    public function Assignee(): Model
+    {
+        return Relation::BelongsTo($this, User::class, 'Assignee_id');
+    }
+
 }

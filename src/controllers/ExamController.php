@@ -14,6 +14,8 @@ class ExamController extends Controller
 {
     public function index(): ResponseInterface
     {
+        
+
         $exams = new Exam();
         $exams = $exams->all();
 

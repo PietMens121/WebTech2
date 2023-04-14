@@ -39,7 +39,7 @@
             </div>
             <div class="px-4 w-full">
                 <a href="#" style="display: block;" type="button" class="text-white focus:ring-4 font-medium rounded-lg w-full text-sm px-2 py-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">
-                    <p class="text-center">Alles bekijken</p>
+                    <p class="text-center">Alle cijfers bekijken</p>
                 </a>
             </div>
         </div>
@@ -89,6 +89,45 @@
                 </a>
             </div>
         </div>
+
+        @if(user()->role()->name == 'lecturer' || user()->role()->name == 'admin');
+        <div class="flex-none border p-2 w-1/4 shadow-lg rounded-lg">
+            <p class="ml-4">
+                Gebruikers
+            </p>
+            <div class="w-full h-4/6 m-4">
+                <div class=" w-11/12 h-full m-4s flex flex-col overflow-auto">
+
+                    @foreach($users as $user);
+                    <div class="w-full h-1/5 border" style="height: 46px;">
+                        <div class="flex h-full">
+                            <div class="flex">
+                                <div class="self-center ml-2 overflow-hidden">
+                                {{ $user->username}}
+                                </div>
+                            </div>
+
+                            <div class=" flex">
+                                <div class="self-center ml-2 overflow-hidden">
+                                {{ $user->password }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @endforeach
+
+                </div>
+            </div>
+            <div class="px-4 w-full">
+                <a href="#" style="display: block;" type="button" class="text-white focus:ring-4 font-medium rounded-lg w-full text-sm px-2 py-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">
+                    <p class="text-center">Alle Gebruikers bekijken</p>
+                </a>
+            </div>
+        </div>
+        @endif
+
     </div>
 
 @endsection()

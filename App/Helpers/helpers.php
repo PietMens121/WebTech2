@@ -1,6 +1,7 @@
 <?php
 
 use App\container\DIContainer;
+use App\Helpers\dd;
 use App\Http\Response;
 use App\Http\ServerRequest;
 use App\Templating\Render;
@@ -24,4 +25,11 @@ function redirect($url): void {
 
 function user(): \App\Database\Model|null {
     return \App\Database\Auth::user();
+}
+
+function dd($data): void
+{
+    $dd = new dd();
+    echo $dd->dnl($data);
+    exit;
 }

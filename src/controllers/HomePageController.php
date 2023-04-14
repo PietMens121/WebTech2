@@ -14,21 +14,18 @@ class HomePageController extends Controller
     {
         $user = Auth::user();
 
-        $n = new User();
-        $n->username = 'Henk';
-        $n->password = 'harry';
-        $n->role_id = '1';
-        $n->save();
-
-        $exams = new Exam;
+        $exams = new Exam();
         $exams = $exams->all();
 
         $grades = $user->withPivot(Exam::class);
 
+        $users = new User();
+        $users = $users->all();
+
         return Render::view('home.html', [
-            'user' => $user,
             'exams' => $exams,
-            'grades' => $grades
+            'grades' => $grades,
+            'users' => $users
         ]);
     }
 }

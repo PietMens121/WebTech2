@@ -19,7 +19,7 @@ Route::get('/login', [new UserController(), 'showLogin']);
 
 Route::get('/login/failed', [new UserController(), 'showLoginFailed']);
 
-Route::get('/logout', [new UserController(), 'logout']);
+Route::post('/logout', [new UserController(), 'logout']);
 
 Route::get('/register', [new UserController(), 'showRegister']);
 

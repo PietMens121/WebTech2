@@ -33,4 +33,8 @@ class User extends Model
         return Relation::BelongsToMany($this, Exam::class);
     }
 
+    public function ExamAdmin(): array
+    {
+        return Relation::hasMany($this, Exam::class, 'Assignee_id');
+    }
 }
