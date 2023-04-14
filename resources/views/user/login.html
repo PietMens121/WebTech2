@@ -5,12 +5,12 @@
         <div class="bg-gray-800 border-gray-700 p-8 w-3/12 ">
             <form method="POST" action="/login">
                 <div class="mb-6">
-                    <label for="username" class="block mb-2 text-sm font-medium text-white">Your email</label>
+                    <label for="username" class="block mb-2 text-sm font-medium text-white">Gebruikersnaam</label>
                     <input type="text" name="username" id="username" class="border text-gray-900 text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Gebruikersnaam" required>
                 </div>
                 <div class="mb-6">
-                    <label for="password" class="block mb-2 text-sm font-medium text-white">Your password</label>
-                    <input type="password" name="password" id="password" class="border text-gray-900 text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" required>
+                    <label for="password" class="block mb-2 text-sm font-medium text-white">Wachtwoord</label>
+                    <input type="password" name="password" id="password" class="border text-gray-900 text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Wachtwoord" required>
                 </div>
                 @if(isset($errorMessage));
                 <div class="mb-4">

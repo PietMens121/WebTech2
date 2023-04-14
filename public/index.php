@@ -2,6 +2,7 @@
 
 use App\container\DIContainer;
 use App\Http\RequestHandler;
+use App\Http\Response;
 use App\Routing\Router;
 use App\Service\DotEnv;
 use App\Http\ServerRequest;
@@ -41,4 +42,4 @@ $diContainer->set(ServerRequest::class, $request);   // Put request in container
 $response = $requestHandler->handle($request);
 
 // Send the response
-$response->send();
+Response::send($response);

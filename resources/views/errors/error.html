@@ -48,7 +48,8 @@
 <body>
 <div id="main">
     <div class="fof">
-        <h1>Error 404</h1>
+        <h1>Error {{ $statusCode }}</h1>
+        <p>{{ $reasonPhrase }}</p>
     </div>
 </div>
 </body>
