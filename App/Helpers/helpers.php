@@ -16,3 +16,7 @@ function abort($status): void {
     $response = Render::view('errors/error.html', [], $status);
     $response->send();
 }
+
+function user(): \App\Database\Model|null {
+    return \App\Database\Auth::user();
+}

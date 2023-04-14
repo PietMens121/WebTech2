@@ -3,6 +3,7 @@
 namespace src\controllers;
 
 
+use App\Database\Auth;
 use App\Templating\Render;
 use src\models\User;
 
@@ -10,8 +11,7 @@ class HomePageController extends Controller
 {
     public function index()
     {
-        $user = new User();
-        $user = $user->find(1);
+        $user = Auth::user();
 
         $exams = $user->Exams();
 

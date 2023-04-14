@@ -30,6 +30,7 @@ class ServerRequest implements ServerRequestInterface
             $requestTarget,
             $_COOKIE,
             $_GET,
+            $_POST,
             []
         );
     }
@@ -41,6 +42,7 @@ class ServerRequest implements ServerRequestInterface
     private UriInterface $uri;
     private array $cookieParams;
     private array $queryParams;
+    private array $parsedBody;
     private array $attributes;
 
     public function __construct(
@@ -51,6 +53,7 @@ class ServerRequest implements ServerRequestInterface
         string $requestTarget = '',
         array $cookieParams = [],
         array $queryParams = [],
+        array $parsedBody = [],
         array $attributes = []
     ) {
         $this->method = $method;
@@ -60,6 +63,7 @@ class ServerRequest implements ServerRequestInterface
         $this->requestTarget = $requestTarget;
         $this->cookieParams = $cookieParams;
         $this->queryParams = $queryParams;
+        $this->parsedBody = $parsedBody;
         $this->attributes = $attributes;
     }
 
@@ -111,6 +115,11 @@ class ServerRequest implements ServerRequestInterface
     public function getQueryParams(): array
     {
         return $this->queryParams;
+    }
+
+    public function getParsedBody() : array
+    {
+        return $this->parsedBody;
     }
 
     public function getAttributes(): array
@@ -194,11 +203,6 @@ class ServerRequest implements ServerRequestInterface
     }
 
     public function withUploadedFiles(array $uploadedFiles) : null
-    {
-        return null;
-    }
-
-    public function getParsedBody() : null
     {
         return null;
     }
