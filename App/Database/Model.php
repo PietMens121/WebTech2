@@ -198,10 +198,19 @@ abstract class Model
 
 //    $user->attach(Exam::class, $id)
 
-    public function attach(string $relation, int $id): bool
+    public function attach(string $relation, int $id, string $pivot = ''): bool
     {
-        return Relation::attach($relation, $id, $this);
+        return Relation::attach($relation, $id, $this, $pivot);
     }
 
+    public function pivot(string $relation, string $pivot = ''): array
+    {
+        return Relation::getPivot($relation, $this, $pivot);
+    }
+
+    public function withPivot(string $relation, string $pivot = ''): array
+    {
+        return Relation::getWithPivot($relation, $this, $pivot);
+    }
 
 }
