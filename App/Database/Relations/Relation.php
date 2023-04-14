@@ -54,7 +54,7 @@ class Relation
 
         $foreign_key = self::formatForeignKey($model, $foreign_key);
 
-        $primary_key = $model->primary_key;
+        $primary_key = $model->getPrimaryKey();
         return $relation_model->whereOne($foreign_key, $model->{$primary_key});
     }
 
@@ -71,7 +71,7 @@ class Relation
 
         $foreign_key = self::formatForeignKey($model, $foreign_key);
 
-        $primary_key = $model->primary_key;
+        $primary_key = $model->getPrimaryKey();
 
         return $relation_model->where($foreign_key, $model->{$primary_key});
     }
@@ -123,8 +123,8 @@ class Relation
     private static function formatWhereClause(): string
     {
         $table = self::$model->getTable();
-        $primary_key = self::$model->{self::$model->primary_key};
-        return $table . '.' . self::$model->primary_key . ' = ' . $primary_key;
+        $primary_key = self::$model->{self::$model->getPrimaryKey()};
+        return $table . '.' . self::$model->getPrimaryKey() . ' = ' . $primary_key;
     }
 
     private static function prepareFirstJoin(QueryBuilder $query, $pivot): QueryBuilder
@@ -157,7 +157,7 @@ class Relation
         $columns = self::formatForeignKey(self::$model) . ' = ? , ' . self::formatForeignKey(self::$relation_model) . ' = ?';
         $values = [];
 
-        array_push($values, self::$model->{self::$model->primary_key}, $id);
+        array_push($values, self::$model->{self::$model->getPrimaryKey()}, $id);
 
         return self::$model->pushDb($pivot, $columns, $values);
     }
@@ -172,7 +172,7 @@ class Relation
         $query = new QueryBuilder();
 
         $query->from($pivot)
-            ->where(self::formatForeignKey(self::$model) . ' = ' . self::$model->{self::$model->primary_key});
+            ->where(self::formatForeignKey(self::$model) . ' = ' . self::$model->{self::$model->getPrimaryKey()});
 
         echo $query;
 

@@ -18,7 +18,7 @@ abstract class Model
     protected string $table;
     protected array $fillable;
     private PDO $conn;
-    public string $primary_key = 'id';
+    private string $primary_key = 'id';
 
     public function __construct()
     {
@@ -99,15 +99,14 @@ abstract class Model
 
         $columns = implode(',', $columns);
 
+
         return $this->pushDb($this->table, $columns, $values);
     }
 
-    public function pushDb(string $table, string $columns, array $values)
+    public function pushDb(string $table, string $columns, array $values): bool
     {
 
         $query = sprintf('INSERT INTO %s SET %s ', $table, $columns);
-
-        var_dump($query);
 
         try {
             $pdo = $this->conn->prepare($query)->execute($values);
@@ -211,6 +210,11 @@ abstract class Model
     public function withPivot(string $relation, string $pivot = ''): array
     {
         return Relation::getWithPivot($relation, $this, $pivot);
+    }
+
+    public function getPrimaryKey()
+    {
+        return $this->primary_key;
     }
 
 }

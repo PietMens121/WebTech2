@@ -9,7 +9,7 @@ use src\controllers\UserController;
 
 Route::get('/', [new HomePageController(), 'index'])->middleware('auth');
 
-Route::get('/exams', [new ExamController(), 'index']);
+Route::get('/exams', [new ExamController(), 'index'])->middleware('auth')->middleware('lecturer');
 
 Route::get('/exams/{id}', [new ExamController(), 'show']);
 
