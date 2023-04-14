@@ -17,6 +17,11 @@ function abort($status): void {
     $response->send();
 }
 
+function redirect($url): void {
+    $response = new Response(null, 302);
+    $response->withHeader('Location', $url)->send();
+}
+
 function user(): \App\Database\Model|null {
     return \App\Database\Auth::user();
 }

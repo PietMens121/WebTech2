@@ -10,7 +10,7 @@ class AuthMiddleware implements Middleware
     public function handle()
     {
         if (!Auth::user()) {
-             abort(404);
+             redirect("/login");
         }
     }
 }
