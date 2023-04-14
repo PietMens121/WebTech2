@@ -7,7 +7,7 @@ use src\controllers\UserController;
 
 // Setup routes here
 
-Route::get('/', [new HomePageController(), 'index']);
+Route::get('/', [new HomePageController(), 'index'])->middleware('auth');
 
 Route::get('/exams', [new ExamController(), 'index']);
 

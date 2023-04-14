@@ -16,7 +16,7 @@
         </form>
     </div>
 
-    @if(true);
+    @if($exam->users());
         <div class="w-2/12 bg-gray-800 border-gray-700 rounded-lg overflow-auto" style="max-height: 226px;">
 
             @foreach($exam->users() as $user);
