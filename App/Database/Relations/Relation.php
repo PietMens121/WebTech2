@@ -14,7 +14,7 @@ class Relation
     private static Model $model;
     private static Model $relation_model;
 
-    private static function formatForeignKey(Model $model, string $foreign_key): string
+    private static function formatForeignKey(Model $model, string $foreign_key = ''): string
     {
         if ($foreign_key === '') {
             $reflection = new ReflectionClass($model);
@@ -108,10 +108,6 @@ class Relation
 
         $results = $query->get();
 
-        $results[] = [
-            'pivot' => $pivot_table
-        ];
-
         return $results;
     }
 
@@ -142,13 +138,20 @@ class Relation
         );
     }
 
-    public static function attach(string $relation, int $id, Model $model)
+    public static function attach(string $relation, int $id, Model $model, $pivot = ''): bool
     {
         self::$model = $model;
         self::$relation_model = new ($relation)();
 
-        $query = new QueryBuilder();
+        $pivot = self::formatPivotTable($pivot);
 
+        $columns = self::formatForeignKey(self::$model) . ' = ? , ' . self::formatForeignKey(self::$relation_model) . ' = ?';
+        $values = [];
+
+        var_dump($pivot);
+
+        array_push($values, self::$model->{self::$model->primary_key}, $id);
+
+        return self::$model->pushDb($pivot, $columns, $values);
     }
-
 }

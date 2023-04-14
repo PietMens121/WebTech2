@@ -42,6 +42,12 @@ class ExamController extends Controller
         $exam = new Exam();
         $exam = $exam->find($id);
 
+        $error = $exam->attach(User::class, '1');
 
+        if(!$error){
+            abort(404);
+        }
+
+        return Response::redirect('/exams/'. $id);
     }
 }
