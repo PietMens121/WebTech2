@@ -16,22 +16,36 @@
         </form>
     </div>
 
-    @if($exam->users());
-        <div class="w-2/12 bg-gray-800 border-gray-700 rounded-lg overflow-auto" style="max-height: 226px;">
+    @if(user()->role()->name == 'lecturer' || user()->role()->name == 'admin');
+        @if($users);
+            <div class="w-2/12 bg-gray-800 border-gray-700 rounded-lg overflow-auto" style="max-height: 226px;">
 
-            @foreach($exam->users() as $user);
-                    <div class="w-full h-3/12 border">
-                        <div class="flex gap-2 h-full">
-                            <div class="w-2/6 h-full flex p-1 px-2 text-white">
-                                <p>{{ $user['username']}}</p>
-                                <p class="ml-1">{{ $user['password']}}</p>
+                @foreach($users as $user);
+                        <div class="w-full h-3/12 border">
+                            <div class="flex gap-2 h-full">
+                                <div class="w-2/6 h-full flex py-3 px-2 text-white">
+                                    <p>{{ $user['username']}}</p>
+                                    <p class="ml-1">{{ $user['password']}}</p>
+                                </div>
+                                <form METHOD="POST" action="/exams/{{ $id }}/{{ $user['id'] }}" class="flex justify-between">
+                                    <div class="p-1 px-2 h-full w-4/12">
+                                        <label for="grade"></label>
+                                        <input id="grade" class="border text-gray-900 text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" value="{{$user['grade']}}">
+                                    </div>
+                                    <div class="px-1 py-2">
+                                        <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">
+                                            Pas aan
+                                            <svg aria-hidden="true" class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
+
                         </div>
 
-                    </div>
-
-            @endforeach
-        </div>
-    @endif()
+                @endforeach
+            </div>
+        @endif();
+    @endif();
 </div>
 @endsection()

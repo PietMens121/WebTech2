@@ -10,17 +10,12 @@ use src\controllers\UserController;
 Route::get('/', [new HomePageController(), 'index'])->middleware('auth');
 
 Route::get('/exams', [new ExamController(), 'index'])->middleware('auth')->middleware('lecturer');
-
 Route::get('/exams/{id}', [new ExamController(), 'show']);
-
 Route::post('/exam/{id}', [new ExamController(), 'attach']);
+Route::post('/exam/{id}/{user_id}', [new ExamController(), 'updateGrade']);
 
 Route::get('/login', [new UserController(), 'showLogin']);
-
 Route::get('/login/failed', [new UserController(), 'showLoginFailed']);
-
 Route::post('/logout', [new UserController(), 'logout']);
-
 Route::get('/register', [new UserController(), 'showRegister']);
-
 Route::post('/login', [new UserController(), 'login']);
