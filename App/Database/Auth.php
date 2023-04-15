@@ -50,8 +50,8 @@ class Auth
             throw new UserNotFoundException();
         }
 
-        // Check if passwords match TODO: Add password hashing.
-        if ($user->password != $password) {
+        // Check if passwords match
+        if ($user->password != hash('sha256', $password)) {
             throw new WrongPasswordException();
         }
 
@@ -77,7 +77,7 @@ class Auth
         // Register user
         $user = new User();
         $user->username = $username;
-        $user->password = $password;
+        $user->password = hash('sha256', $password);
         $user->save();
     }
 }
