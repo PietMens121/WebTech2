@@ -13,7 +13,7 @@ Route::get('/', [new HomePageController(), 'index'])->middleware('auth');
 Route::get('/exams', [new ExamController(), 'index'])->middleware('auth');
 Route::get('/exams/{id}', [new ExamController(), 'show'])->middleware('auth');
 Route::post('/exam/{id}', [new ExamController(), 'attach'])->middleware('auth');
-Route::post('/exam/{id}/{user_id}', [new ExamController(), 'updateGrade'])->middleware('auth');
+Route::post('/exam/{id}/{user_id}', [new ExamController(), 'updateGrade'])->middleware('auth')->middleware('lecturer');
 
 //Login
 Route::get('/login', [new UserController(), 'showLogin']);

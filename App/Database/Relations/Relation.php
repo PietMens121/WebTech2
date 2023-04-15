@@ -14,6 +14,12 @@ class Relation
     private static Model $model;
     private static Model $relation_model;
 
+
+    public static function initRelation(Model $model, string $relation): void
+    {
+        self::$model = $model;
+        self::$relation_model = new ($relation)();
+    }
     private static function formatForeignKey(Model $model, string $foreign_key = ''): string
     {
         if ($foreign_key === '') {
@@ -87,8 +93,7 @@ class Relation
 
     public static function BelongsToMany(Model $model, string $relation_model, string $pivot_table = ''): array
     {
-        self::$model = $model;
-        self::$relation_model = new ($relation_model)();
+        self::initRelation($model, $relation_model);
 
         $results = self::prepareRelationJoin($pivot_table);
 
@@ -105,7 +110,7 @@ class Relation
         {
             $query->select(implode(', ', self::$relation_model->getFormattedFillables()));
         } else {
-            $query->select(implode(', ', self::$relation_model->getFormattedFillables()) . ', ' . $pivot_table . '.*');
+            $query->select(implode(', ', self::$relation_model->getFormattedFillables()) . ', ' . $pivot_table . '.*', $pivot_table . '.id AS ' . $pivot_table . '_id');
         }
 
         $query->from(self::$model->getTable());
@@ -149,8 +154,7 @@ class Relation
 
     public static function attach(string $relation, int $id, Model $model, $pivot = ''): bool
     {
-        self::$model = $model;
-        self::$relation_model = new ($relation)();
+        self::initRelation($model, $relation);
 
         $pivot = self::formatPivotTable($pivot);
 
@@ -162,10 +166,26 @@ class Relation
         return self::$model->pushDb($pivot, $columns, $values);
     }
 
+    public static function updatePivot(string $relation, int $id,  Model $model, array $values, $pivot = ''): bool
+    {
+        self::initRelation($model, $relation);
+
+        $pivot = self::formatPivotTable($pivot);
+
+        $foreign_key = self::formatForeignKey(self::$model);
+        $relation_key = self::formatForeignKey(self::$relation_model);
+
+        $where = $foreign_key . ' = '. self::$model->{self::$model->getPrimaryKey()};
+        $and = ' AND '. $relation_key .' = ' . $id;
+
+        $condition = $where . $and;
+
+        return self::$model->updateSpecific($pivot, array_keys($values), array_values($values), $condition);
+    }
+
     public static function getPivot(string $relation, Model $model, $pivot = ''): array
     {
-        self::$model = $model;
-        self::$relation_model = new ($relation)();
+        self::initRelation($model, $relation);
 
         $pivot = self::formatPivotTable($pivot);
 
@@ -181,8 +201,7 @@ class Relation
 
     public static function getWithPivot(string $relation, Model $model, $pivot = ''): array
     {
-        self::$model = $model;
-        self::$relation_model = new ($relation)();
+        self::initRelation($model, $relation);
 
         return self::prepareRelationJoin($pivot, true);
     }

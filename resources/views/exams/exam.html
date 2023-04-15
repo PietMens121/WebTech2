@@ -18,7 +18,7 @@
 
     @if(user()->role()->name == 'lecturer' || user()->role()->name == 'admin');
         @if($users);
-            <div class="w-2/12 bg-gray-800 border-gray-700 rounded-lg overflow-auto" style="max-height: 226px;">
+            <div class="w-3/12 bg-gray-800 border-gray-700 rounded-lg overflow-auto" style="max-height: 226px;">
 
                 @foreach($users as $user);
                         <div class="w-full h-3/12 border">
@@ -27,10 +27,10 @@
                                     <p>{{ $user['username']}}</p>
                                     <p class="ml-1">{{ $user['password']}}</p>
                                 </div>
-                                <form METHOD="POST" action="/exams/{{ $id }}/{{ $user['id'] }}" class="flex justify-between">
-                                    <div class="p-1 px-2 h-full w-4/12">
+                                <form METHOD="POST" action="/exam/{{ $id }}/{{ $user['user_id'] }}" class="flex justify-end">
+                                    <div class="p-1 px-2 h-full w-3/12">
                                         <label for="grade"></label>
-                                        <input id="grade" class="border text-gray-900 text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" value="{{$user['grade']}}">
+                                        <input id="grade" name="grade" placeholder="Cijfer" class="border text-gray-900 text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" value="{{$user['grade']}}">
                                     </div>
                                     <div class="px-1 py-2">
                                         <button type="submit" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">

@@ -42,6 +42,7 @@ class ExamController extends Controller
 
         $users = $exam->withPivot(User::class);
 
+
         return Render::view('exams/exam.html', [
             'id' => $id,
             'exam' => $exam,
@@ -65,9 +66,13 @@ class ExamController extends Controller
 
     public function updateGrade($id, $user_id): ResponseInterface
     {
+        $exam = new Exam();
+        $exam = $exam->find($id);
 
-        dd($user_id);
+        $request = request()->getParsedBody();
 
-        return Response::redirect('/exam/' . $id);
+        $exam->updatePivot(User::class, $user_id, array('grade' => $request['grade']));
+
+        return Response::redirect('/exams/' . $id);
     }
 }
