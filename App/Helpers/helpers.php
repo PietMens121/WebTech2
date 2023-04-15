@@ -6,24 +6,26 @@ use App\Http\Response;
 use App\Http\ServerRequest;
 use App\Templating\Render;
 
-function request(): ServerRequest {
+function request(): ServerRequest
+{
     return DIContainer::getInstance()->get(ServerRequest::class);
 }
 
-function abort($status): void {
-    /**
-     * @var $response Response
-     */
-    $response = Render::view('errors/error.html', [], $status);
-    $response->send();
+function abort($status): void
+{
+    $reasonPhrase = Response::PHRASES[$status];
+    $response = Render::view('errors/error.html', ["statusCode" => $status, "reasonPhrase" => $reasonPhrase], $status);
+    Response::send($response);
 }
 
-function redirect($url): void {
+function redirect($url): void
+{
     $response = new Response(null, 302);
-    $response->withHeader('Location', $url)->send();
+    Response::send($response->withHeader('Location', $url));
 }
 
-function user(): \App\Database\Model|null {
+function user(): \App\Database\Model|null
+{
     return \App\Database\Auth::user();
 }
 

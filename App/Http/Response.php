@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Templating\Render;
+use JetBrains\PhpStorm\NoReturn;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -31,8 +32,40 @@ class Response implements ResponseInterface
         return Render::view($filename, $data, $statusCode);
     }
 
+    /**
+     * Sends a response and terminates the script.
+     * @param ResponseInterface $response The response to send.
+     * @return void
+     */
+    #[NoReturn] public static function send(ResponseInterface $response): void { //TODO: Put in other class than Response
+        // Extract parameters
+        $protocolVersion = $response->getProtocolVersion();
+        $statusCode = $response->getStatusCode();
+        $reasonPhrase = $response->getReasonPhrase();
+        $headers = $response->getHeaders();
+        $body = $response->getBody();
 
-    private const PHRASES = [
+        // Set status header
+        $statusLine = sprintf('HTTP/%s %d %s', $protocolVersion, $statusCode, $reasonPhrase);
+        header($statusLine);
+
+        // Set the HTTP response code
+        http_response_code($statusCode);
+
+        // Set the HTTP headers
+        foreach ($headers as $header => $value) {
+            header(sprintf('%s: %s', $header, implode(', ', $value)));
+        }
+
+        // Send the response body
+        echo $body;
+
+        // Terminate the script
+        exit;
+    }
+
+
+    public const PHRASES = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -123,34 +156,6 @@ class Response implements ResponseInterface
         $this->reasonPhrase = $reasonPhrase;
     }
 
-    /**
-     * Sends the response and terminates the script.
-     * @return void
-     */
-    public function send(): void
-    {
-        // Set reason phrase if its null
-        $this->reasonPhrase = $this->reasonPhrase ?? self::PHRASES[$this->statusCode];
-
-        // Set status header
-        $statusLine = sprintf('HTTP/%s %d %s', $this->protocolVersion, $this->statusCode, $this->reasonPhrase);
-        header($statusLine);
-
-        // Set the HTTP response code
-        http_response_code($this->statusCode);
-
-        // Set the HTTP headers
-        foreach ($this->headers as $header => $value) {
-            header(sprintf('%s: %s', $header, implode(', ', $value)));
-        }
-
-        // Send the response body
-        echo $this->body;
-
-        // Terminate the script
-        exit;
-    }
-
     public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
@@ -235,6 +240,7 @@ class Response implements ResponseInterface
 
     public function getReasonPhrase(): string
     {
-        return $this->reasonPhrase;
+        // Get corresponding reason phrase if its null
+        return $this->reasonPhrase ?? self::PHRASES[$this->statusCode];
     }
 }

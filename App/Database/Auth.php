@@ -4,6 +4,8 @@ namespace App\Database;
 
 use App\Exceptions\Database\Auth\AlreadyLoggedInException;
 use App\Exceptions\Database\Auth\LoginException;
+use App\Exceptions\Database\Auth\RegisterException;
+use App\Exceptions\Database\Auth\UserAlreadyExistsException;
 use App\Exceptions\Database\Auth\UserNotFoundException;
 use App\Exceptions\Database\Auth\WrongPasswordException;
 use src\models\User;
@@ -56,5 +58,26 @@ class Auth
         // Log user in
         self::$user = $user;
         $_SESSION['userID'] = $user->id;
+    }
+
+    /**
+     * @param string $username Username of the new user.
+     * @param string $password Password of the new user.
+     * @return void
+     * @throws UserAlreadyExistsException
+     */
+    public static function register(string $username, string $password): void
+    {
+        // Check if user already exists
+        $user = (new User())->whereOne('username', $username);
+        if ($user) {
+            throw new UserAlreadyExistsException();
+        }
+
+        // Register user
+        $user = new User();
+        $user->username = $username;
+        $user->password = $password;
+        $user->save();
     }
 }

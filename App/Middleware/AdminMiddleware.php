@@ -8,8 +8,10 @@ class AdminMiddleware implements Middleware
 {
     public function handle()
     {
+        (new AuthMiddleware())->handle();
+
         if(Auth::user()->Role()->name !== 'admin'){
-            redirect('/');
+            abort(401);
         }
     }
 }
