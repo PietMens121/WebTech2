@@ -103,6 +103,22 @@ abstract class Model
         return $this->pushDb($this->table, $columns, $values);
     }
 
+    public function updateSpecific($table, $columns, $values, $condition): bool
+    {
+        $columns = implode(' = ?, ', $columns) . ' = ?';
+
+        $query = sprintf('UPDATE %s SET %s WHERE %s', $table, $columns, $condition);
+
+        try {
+            $pdo = $this->conn->prepare($query)->execute($values);
+        } catch (PDOException $e) {
+            print('something went wrong inserting/updating the user' . $e);
+            $pdo = false;
+        }
+
+        return $pdo;
+    }
+
     public function pushDb(string $table, string $columns, array $values): bool
     {
 
@@ -195,11 +211,14 @@ abstract class Model
         return $array;
     }
 
-//    $user->attach(Exam::class, $id)
-
     public function attach(string $relation, int $id, string $pivot = ''): bool
     {
         return Relation::attach($relation, $id, $this, $pivot);
+    }
+
+    public function updatePivot(string $relation, int $id,array $inserts, $pivot = ''): bool
+    {
+        return Relation::updatePivot($relation, $id, $this, $inserts, $pivot);
     }
 
     public function pivot(string $relation, string $pivot = ''): array
