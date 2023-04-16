@@ -1,5 +1,5 @@
 # WebTech2
-Dit het project van Erwin Veenhoven en Piet mens voor periode 3, Webtechnologie II. Hierond staat een uitleg hoe je de website kan starten.
+Dit is het project van Erwin Veenhoven en Piet mens voor periode 3, Webtechnologie II. Hierond staat een uitleg hoe je de website kan starten.
 
 <br>**Database aanmaken:**</br>
 
