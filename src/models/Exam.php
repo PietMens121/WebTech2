@@ -17,6 +17,9 @@ class Exam extends Model
 
     protected array $fillable = [
         'name',
+        'weight',
+        'abbreviation',
+        'assignee_id',
     ];
 
     public function Users(): array

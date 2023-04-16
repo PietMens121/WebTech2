@@ -24,3 +24,8 @@ Route::get('/register/{errorMessage}', [new UserController(), 'showRegister'])->
 Route::post('/register', [new UserController(), 'register'])->middleware('admin');
 Route::post('/logout', [new UserController(), 'logout'])->middleware('auth');
 
+//Users
+Route::get('/users', [new UserController(), 'index'])->middleware('admin');
+Route::get('/user/{id}', [new UserController(), 'show'])->middleware('admin');
+Route::post('/user/{id}', [new UserController(), 'update'])->middleware('admin');
+Route::post('/user/detach/{id}', [new UserController(), 'detach'])->middleware('admin');

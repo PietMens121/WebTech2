@@ -4,6 +4,7 @@ namespace App\Database\Relations;
 
 use App\Database\Builder\QueryBuilder;
 use App\Database\Model;
+use App\Helpers\dd;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
@@ -33,8 +34,6 @@ class Relation
     {
         if ($pivot_table === '') {
             $order_array = [];
-
-
 
             array_push($order_array, self::$model->getShortName(), self::$relation_model->getShortName());
             sort($order_array);
@@ -95,9 +94,7 @@ class Relation
     {
         self::initRelation($model, $relation_model);
 
-        $results = self::prepareRelationJoin($pivot_table);
-
-        return $results;
+        return self::prepareRelationJoin($pivot_table);
     }
 
     private static function prepareRelationJoin($pivot_table, $with_pivot = false): array
@@ -108,7 +105,7 @@ class Relation
 
         if(!$with_pivot)
         {
-            $query->select(implode(', ', self::$relation_model->getFormattedFillables()));
+            $query->select(implode(', ', self::$relation_model->getFormattedFillables()). ', ' .  self::$relation_model->getTable() .'.' .self::$relation_model->getPrimaryKey());
         } else {
             $query->select(implode(', ', self::$relation_model->getFormattedFillables()) . ', ' . $pivot_table . '.*', $pivot_table . '.id AS ' . $pivot_table . '_id');
         }
@@ -120,9 +117,7 @@ class Relation
 
         $query->where(self::formatWhereClause());
 
-        $results = $query->get();
-
-        return $results;
+        return $query->get();
     }
 
     private static function formatWhereClause(): string
@@ -204,5 +199,17 @@ class Relation
         self::initRelation($model, $relation);
 
         return self::prepareRelationJoin($pivot, true);
+    }
+
+    public static function detach(string $relation, Model $model, $pivot = ''): bool
+    {
+        self::initRelation($model, $relation);
+
+        $pivot = self::formatPivotTable($pivot);
+        $foreign_key = self::formatForeignKey(self::$model);
+        $relation_key = self::formatForeignKey(self::$relation_model);
+
+//        $condition = $foreig
+        return self::$model->deleteRow($pivot, );
     }
 }

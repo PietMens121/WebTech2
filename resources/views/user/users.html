@@ -1,0 +1,44 @@
+@extends(layouts/layout.html)
+
+@section(body)
+
+<div>
+
+
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-400">
+      <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+      <tr>
+        <th scope="col" class="max-w-1/4 px-6 py-3">
+          Username
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Color
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Wijzig
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      @foreach($users as $user);
+      <tr class="border-b bg-gray-900 border-gray-700">
+        <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap text-white">
+          {{ $user->username}}
+        </th>
+        <td class="px-6 py-4">
+          {{ $user->role()->name }}
+        </td>
+        <td class="px-6 py-4">
+          <a href="/user/{{$user->id}}" class="font-medium text-blue-500 hover:underline">Edit</a>
+        </td>
+      </tr>
+      @endforeach
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+@endsection()

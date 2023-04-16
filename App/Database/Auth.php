@@ -66,7 +66,7 @@ class Auth
      * @return void
      * @throws UserAlreadyExistsException
      */
-    public static function register(string $username, string $password): void
+    public static function register(string $username, string $password, int $role): void
     {
         // Check if user already exists
         $user = (new User())->whereOne('username', $username);
@@ -78,6 +78,7 @@ class Auth
         $user = new User();
         $user->username = $username;
         $user->password = hash('sha256', $password);
+        $user->role_id = $role;
         $user->save();
     }
 }

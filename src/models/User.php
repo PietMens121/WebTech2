@@ -19,7 +19,6 @@ class User extends Model
 
     protected array $fillable = [
         'username',
-        'password',
         'role_id',
     ];
 

@@ -4,6 +4,7 @@
 
     <div style="height: 440px;" class="flex w-full p-8 mt-8 justify-center h-96 gap-16">
 
+        @if(user()->role()->name === 'student');
         <div class="flex-none border p-2 w-1/4 shadow-lg rounded-lg">
             <p class="ml-4">
                 Cijfers
@@ -43,11 +44,12 @@
                 </a>
             </div>
         </div>
+        @endif;
 
 
         <div class="flex-none border p-2 w-1/4 shadow-lg rounded-lg">
             <p class="ml-4">
-                Tentamens
+                alle Tentamens
             </p>
             <div class="w-full h-4/6 m-4">
                 <div class=" w-11/12 h-full m-4s flex flex-col overflow-auto">
@@ -90,7 +92,60 @@
             </div>
         </div>
 
-        @if(user()->role()->name == 'lecturer' || user()->role()->name == 'admin');
+        @if(user()->role()->name === 'lecturer');
+            @if(user()->ExamAdmin());
+                <div class="flex-none border p-2 w-1/4 shadow-lg rounded-lg">
+                    <p class="ml-4">
+                        Mijn tentamens
+                    </p>
+                    <div class="w-full h-4/6 m-4">
+                        <div class=" w-11/12 h-full m-4s flex flex-col overflow-auto">
+                            @foreach(user()->ExamAdmin() as $exam);
+                            <!--                        Tentamen-->
+                            <div class="w-full h-1/5 border flex px-1 justify-center" style="min-height: 50px;">
+
+
+                                <div class="flex h-full w-9/12 ">
+                                    <div class=" flex">
+                                        <div class="self-center overflow-hidden px-1">
+                                            {{$exam->name}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex h-full w-3/12">
+                                    <div class=" flex">
+                                        <div class="self-center overflow-hidden font-light flex gap-1">
+                                            <p>
+                                                Weging:
+                                            </p>
+                                            <p class="">
+                                                {{ $exam->weight }}
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            @endforeach
+                            <!--                End tentamen-->
+                        </div>
+                    </div>
+                    <div class="px-4 w-full">
+                        <form action="/exams" method="get">
+                            <input class="hidden" name="filter" value="true">
+                            <button type="submit" style="display: block;" class="text-white focus:ring-4 font-medium rounded-lg w-full text-sm px-2 py-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">
+                                <p class="text-center">Bekijken</p>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endif();
+        @endif();
+
+
+        @if(user()->role()->name == 'admin');
         <div class="flex-none border p-2 w-1/4 shadow-lg rounded-lg">
             <p class="ml-4">
                 Gebruikers
@@ -106,12 +161,6 @@
                                 {{ $user->username}}
                                 </div>
                             </div>
-
-                            <div class=" flex">
-                                <div class="self-center ml-2 overflow-hidden">
-                                {{ $user->password }}
-                                </div>
-                            </div>
                         </div>
 
                     </div>
@@ -121,7 +170,7 @@
                 </div>
             </div>
             <div class="px-4 w-full">
-                <a href="#" style="display: block;" type="button" class="text-white focus:ring-4 font-medium rounded-lg w-full text-sm px-2 py-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">
+                <a href="/users" style="display: block;" type="button" class="text-white focus:ring-4 font-medium rounded-lg w-full text-sm px-2 py-2 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-blue-800">
                     <p class="text-center">Alle Gebruikers bekijken</p>
                 </a>
             </div>

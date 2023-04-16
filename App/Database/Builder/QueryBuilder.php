@@ -18,6 +18,8 @@ class QueryBuilder
 
     public string $table;
 
+    private string $groupBy = '';
+
     public function __toString(): string
     {
         if (!$this->fields) {
@@ -27,7 +29,8 @@ class QueryBuilder
         return 'SELECT ' . implode(', ', $this->fields)
             . ' FROM ' . implode(', ', $this->from)
             . ' ' . implode('', $this->joins)
-            . $where;
+            . $where . ' '
+            . $this->groupBy;
     }
 
     public function select(string ...$select): self
@@ -61,6 +64,13 @@ class QueryBuilder
         return $this;
     }
 
+    public function leftOuterJoin(string $table, string $constraint, string $operator, $constraint2): self
+    {
+        $this->joins[] = new JoinClause('LEFT OUTER', $table, $constraint, $operator, $constraint2);
+
+        return $this;
+    }
+
     public function get(): array
     {
         $sql = new MySQL();
@@ -70,5 +80,12 @@ class QueryBuilder
         $results = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         return $results;
+    }
+
+    public function groupBy($clause): self
+    {
+        $this->groupBy = 'GROUP BY '. $clause;
+
+        return $this;
     }
 }

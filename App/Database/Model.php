@@ -17,8 +17,8 @@ abstract class Model
 {
     protected string $table;
     protected array $fillable;
-    private PDO $conn;
     private string $primary_key = 'id';
+    private PDO $conn;
 
     public function __construct()
     {
@@ -87,20 +87,37 @@ abstract class Model
      */
     public function save(): bool
     {
-        $reflection = new ReflectionObject($this);
+        $columns = $this->formatProperties();
+        $values = $this->getValues();
 
-        $columns = [];
+        return $this->pushDb($this->table, $columns, $values);
+    }
+
+    private function getValues(): array
+    {
+        $reflection = new ReflectionObject($this);
         $values = [];
 
         foreach ($reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            $columns[] = '`' . $property->getName() . '` = ?';
             $values[] = $this->{$property->getName()};
+        }
+
+        return $values;
+    }
+
+    private function formatProperties(): string
+    {
+        $reflection = new ReflectionObject($this);
+
+        $columns = [];
+
+        foreach ($reflection->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            $columns[] = '`' . $property->getName() . '` = ?';
         }
 
         $columns = implode(',', $columns);
 
-
-        return $this->pushDb($this->table, $columns, $values);
+        return $columns;
     }
 
     public function updateSpecific($table, $columns, $values, $condition): bool
@@ -119,6 +136,22 @@ abstract class Model
         return $pdo;
     }
 
+    public function update(): bool
+    {
+        $columns = $this->formatProperties();
+        $values = $this->getValues();
+        $condition = 'id = '. $this->{$this->primary_key};
+
+        return $this->updateModel($columns, $values, $condition);
+    }
+
+    private function updateModel($columns, $values, $condition): bool
+    {
+        $query = sprintf('UPDATE %s SET %s WHERE %s', $this->table, $columns, $condition);
+
+        return $this->prepareAndExecute($query, $values);
+    }
+
     public function pushDb(string $table, string $columns, array $values): bool
     {
 
@@ -132,6 +165,29 @@ abstract class Model
         }
 
         return $pdo;
+    }
+
+    private function prepareQuery($query): \PDOStatement
+    {
+        return $this->conn->prepare($query);
+    }
+
+    private function executeQuery(\PDOStatement $pdo, $values): bool
+    {
+        try {
+            $pdo = $pdo->execute($values);
+        } catch (PDOException $e) {
+            print('something went wrong inserting/updating the user ' . $e);
+            $pdo = false;
+        }
+
+        return $pdo;
+    }
+
+    private function prepareAndExecute($query, $values): bool
+    {
+        $pdo = $this->prepareQuery($query);
+        return $this->executeQuery($pdo, $values);
     }
 
     /**
@@ -216,6 +272,24 @@ abstract class Model
         return Relation::attach($relation, $id, $this, $pivot);
     }
 
+    public function detach(string $relation, $id): bool
+    {
+        return Relation::detach();
+    }
+
+    public function delete(): bool
+    {
+        return true;
+    }
+
+    public function deleteRow($table, $condition): bool
+    {
+        $query = sprintf('DELETE FROM %s WHERE %s', $table, $condition);
+
+        $pdo = $this->prepareQuery($query);
+        return true;
+    }
+
     public function updatePivot(string $relation, int $id,array $inserts, $pivot = ''): bool
     {
         return Relation::updatePivot($relation, $id, $this, $inserts, $pivot);
@@ -231,7 +305,7 @@ abstract class Model
         return Relation::getWithPivot($relation, $this, $pivot);
     }
 
-    public function getPrimaryKey()
+    public function getPrimaryKey(): string
     {
         return $this->primary_key;
     }
