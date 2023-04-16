@@ -55,7 +55,7 @@ class ExamController extends Controller
         $exam = new Exam();
         $exam = $exam->find($id);
 
-        $error = $exam->attach(User::class, '1');
+        $error = $exam->attach(User::class, Auth::user()->id);
 
         if (!$error) {
             abort(404);
