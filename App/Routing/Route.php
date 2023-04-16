@@ -3,7 +3,6 @@
 namespace App\Routing;
 
 use App\container\DIContainer;
-use App\Http\Path;
 use App\Middleware\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
