@@ -39,9 +39,8 @@ abstract class Model
      */
     public function find($id): null|Model
     {
-        $query = sprintf('SELECT * FROM %s WHERE id = %s', $this->table, $id);
-
-        return $this->fetchOne($query);
+        $query = sprintf('SELECT * FROM %s WHERE id = ?', $this->table);
+        return $this->fetchOne($query, [$id]);
     }
 
     /**
@@ -65,19 +64,14 @@ abstract class Model
      */
     public function where($column, $value, $operator = '='): false|array
     {
-        $query = $this->whereQuery($column, $value, $operator);
-        return $this->fetchAll($query);
+        $query = sprintf('SELECT * FROM %s WHERE %s %s "?"', $this->table, $column, $operator);
+        return $this->fetchAll($query, [$value]);
     }
 
     public function whereOne($column, $value, $operator = '=')
     {
-        $query = $this->whereQuery($column, $value, $operator);
-        return $this->fetchOne($query);
-    }
-
-    public function whereQuery($column, $value, $operator): string
-    {
-        return sprintf('SELECT * FROM %s WHERE %s %s "%s"', $this->table, $column, $operator, $value);
+        $query = sprintf( 'SELECT * FROM %s WHERE %s %s ?', $this->table, $column, $operator);
+        return $this->fetchOne($query, [$value]);
     }
 
     /**
@@ -196,10 +190,10 @@ abstract class Model
      * @param $query
      * @return Model
      */
-    private function fetchOne(string $query): Model|null
+    private function fetchOne(string $query, array $values): Model|null
     {
         $pdo = $this->conn->prepare($query);
-        $pdo->execute();
+        $pdo->execute($values);
         $columns = $pdo->fetch(PDO::FETCH_ASSOC);
         if (!$columns) {
             return null;
