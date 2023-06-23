@@ -4,7 +4,6 @@ namespace src\controllers;
 
 use App\Database\Auth;
 use App\Database\Builder\QueryBuilder;
-use App\Exceptions\Database\Auth\AlreadyLoggedInException;
 use App\Exceptions\Database\Auth\LoginException;
 use App\Exceptions\Database\Auth\UserAlreadyExistsException;
 use App\Http\Response;
