@@ -89,6 +89,10 @@ class UserController extends Controller
 
     public function showLoginFailed(): ResponseInterface
     {
+        if (!is_null(user())) {
+            return Render::view("user/loggedIn.html");
+        }
+
         return Render::view('user/login.html', ['errorMessage' => "Verkeerde gebruikersnaam of wachtwoord!"]);
     }
 
