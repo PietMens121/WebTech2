@@ -59,7 +59,7 @@ class UserController extends Controller
 
         $user = new User();
         $user = $user->find($id);
-        $user->username = $request['username'];
+        $user->username = htmlspecialchars($request['username']);
         $user->role_id = $request['role'];
         if($request['exam']) {
             $user->attach(Exam::class, $request['exam']);
@@ -122,7 +122,7 @@ class UserController extends Controller
     {
         $postData = request()->getParsedBody();
         try {
-            Auth::register($postData['username'], $postData['password'], $postData['role']);
+            Auth::register(htmlspecialchars($postData['username']), $postData['password'], $postData['role']);
         } catch (UserAlreadyExistsException) {
             return Response::redirect("/register/Gebruikersnaam al in gebruik!");
         }

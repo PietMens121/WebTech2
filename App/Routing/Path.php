@@ -45,8 +45,8 @@ class Path
         $segments = $path->getSegments();
         for ($i = 0; $i < $this->length; $i++) {
             if ($this->segments[$i]->isParameter()) {
-                continue;
-            }   // Skip iteration if segment is a parameter
+                continue;   // Skip iteration if segment is a parameter
+            }
             if ($this->segments[$i] != $segments[$i]) {
                 return false;
             }
