@@ -12,9 +12,9 @@ class RequestHandler implements RequestHandlerInterface
 {
     private Router $router;
 
-    public function __construct(DIContainer $container)
+    public function __construct(Router $router)
     {
-        $this->router = $container->get(Router::class);
+        $this->router = $router;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

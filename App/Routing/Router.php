@@ -9,14 +9,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class Router
 {
     private RouteContainer $routeContainer;
-    private DIContainer $diContainer;
+    private array $middlewareRegistry;
 
     /**
      * Creates a router
      */
-    public function __construct(DIContainer $diContainer)
+    public function __construct(array $middlewareRegistry)
     {
-        $this->diContainer = $diContainer;
+        $this->middlewareRegistry = $middlewareRegistry;
         $this->routeContainer = new RouteContainer();
     }
 
@@ -66,7 +66,7 @@ class Router
 
     private function addRoute(string $method, string $path, callable $callback): Route
     {
-        $route = new Route($this->diContainer, $method, new Path($path), $callback);
+        $route = new Route($method, new Path($path), $callback, $this->middlewareRegistry);
         $this->routeContainer->add($route);
         return $route;
     }

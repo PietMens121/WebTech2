@@ -23,11 +23,8 @@ require BASE_PATH . '/App/Helpers/helpers.php';
 
 // Set up dependency container
 $diContainer = DIContainer::getInstance();
-$services = [
-    Router::class => new Router($diContainer),
-    'MiddlewareRegistry' => require BASE_PATH . '/App/Middleware/middlewareRegistry.php',
-];
-$diContainer->add($services);
+$diContainer->set('MiddlewareRegistry', require BASE_PATH . '/App/Middleware/middlewareRegistry.php');
+$diContainer->set(Router::class, new Router($diContainer->get('MiddlewareRegistry')));
 
 // Start session
 session_start();
@@ -36,9 +33,9 @@ session_start();
 require_once BASE_PATH . '/routes/web.php';
 
 // Handle the request
-$requestHandler = new RequestHandler($diContainer);
+$requestHandler = new RequestHandler($diContainer->get(Router::class));
 $request = ServerRequest::createFromGlobals();
-$diContainer->set(ServerRequest::class, $request);   // Put request in container
+$diContainer->set(ServerRequest::class, $request);
 $response = $requestHandler->handle($request);
 
 // Send the response
