@@ -2,12 +2,20 @@
 
 namespace App\Routing;
 
-use App\container\DIContainer;
+use App\container\Container;
 use App\Middleware\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
 class Route
 {
+
+    public static function setRouter(Router $router): void
+    {
+        self::$router = $router;
+    }
+
+    private static Router $router;
+
     /**
      * Creates route with GET method.
      * @param string $path
@@ -16,11 +24,7 @@ class Route
      */
     public static function get(string $path, callable $callback): Route
     {
-        /**
-         * @var $router Router
-         */
-        $router = DIContainer::getInstance()->get(Router::class);
-        return $router->get($path, $callback);
+        return self::$router->get($path, $callback);
     }
 
     /**
@@ -31,11 +35,7 @@ class Route
      */
     public static function post(string $path, callable $callback): Route
     {
-        /**
-         * @var $router Router
-         */
-        $router = DIContainer::getInstance()->get(Router::class);
-        return $router->post($path, $callback);
+        return self::$router->post($path, $callback);
     }
 
 

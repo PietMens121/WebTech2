@@ -1,6 +1,7 @@
 <?php
 
-use App\container\DIContainer;
+use App\container\Container;
+use App\container\ServiceLocator;
 use App\Helpers\dd;
 use App\Http\Response;
 use App\Http\ServerRequest;
@@ -8,7 +9,8 @@ use App\Templating\Render;
 
 function request(): ServerRequest
 {
-    return DIContainer::getInstance()->get(ServerRequest::class);
+    return ServiceLocator::getInstance()->get(ServerRequest::class);
+
 }
 
 function abort($status): void

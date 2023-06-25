@@ -4,24 +4,8 @@ namespace App\container;
 
 use App\Exceptions\Container\NotFoundException;
 
-class DIContainer
+class Container
 {
-    private static DIContainer $instance;
-
-    public static function getInstance(): DIContainer
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new DIContainer();
-        }
-
-        return self::$instance;
-    }
-
-    public static function setInstance(DIContainer $instance): void
-    {
-        self::$instance = $instance;
-    }
-
     /**
      * @var array<string, mixed> An array of services registered in the container.
      */

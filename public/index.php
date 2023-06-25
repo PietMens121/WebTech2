@@ -1,8 +1,10 @@
 <?php
 
-use App\container\DIContainer;
+use App\container\Container;
+use App\container\ServiceLocator;
 use App\Http\RequestHandler;
 use App\Http\Response;
+use App\Routing\Route;
 use App\Routing\Router;
 use App\Service\DotEnv;
 use App\Http\ServerRequest;
@@ -21,8 +23,8 @@ require BASE_PATH . '/vendor/autoload.php';
 require BASE_PATH . '/App/Helpers/helpers.php';
 (new DotEnv(BASE_PATH . '/.env'))->load();
 
-// Set up dependency container
-$diContainer = DIContainer::getInstance();
+// Set up dependencies
+$diContainer = new Container();
 $diContainer->set('MiddlewareRegistry', require BASE_PATH . '/App/Middleware/middlewareRegistry.php');
 $diContainer->set(Router::class, new Router($diContainer->get('MiddlewareRegistry')));
 
@@ -30,12 +32,13 @@ $diContainer->set(Router::class, new Router($diContainer->get('MiddlewareRegistr
 session_start();
 
 // Load routes
+Route::setRouter($diContainer->get(Router::class));
 require_once BASE_PATH . '/routes/web.php';
 
 // Handle the request
 $requestHandler = new RequestHandler($diContainer->get(Router::class));
 $request = ServerRequest::createFromGlobals();
-$diContainer->set(ServerRequest::class, $request);
+ServiceLocator::getInstance()->set(ServerRequest::class, $request);
 $response = $requestHandler->handle($request);
 
 // Send the response

@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\container\DIContainer;
+use App\container\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
